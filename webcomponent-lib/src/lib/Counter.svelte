@@ -1,10 +1,17 @@
+<svelte:options customElement="my-component" />
+
 <script lang="ts">
-  let count: number = $state(0)
+  let { buttonHeader } = $props();
+  let count: number = $state(0);
   const increment = () => {
-    count += 1
-  }
+    count += 1;
+  };
+  // export class Counter extends HTMLElement {}
 </script>
 
-<button onclick={increment}>
-  count is {count}
-</button>
+<div>
+  <h2>{buttonHeader}</h2>
+  <button onclick={increment}>
+    count is {count}
+  </button>
+</div>
