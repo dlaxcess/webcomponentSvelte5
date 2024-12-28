@@ -6,12 +6,11 @@ export default defineConfig({
   build: {
     lib: {
       entry: "./src/lib/index.js",
-      name: "MyComponent",
-      fileName: (format) => `my-component.${format}.js`,
+      name: "WebComponentLib",
+      fileName: (format) => `web-component-lib.${format}.js`,
       formats: ["es", "umd"],
     },
     rollupOptions: {
-      // Assurez-vous de ne pas embarquer les dépendances externes
       external: [],
     },
   },

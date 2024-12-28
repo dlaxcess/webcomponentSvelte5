@@ -1,8 +1,19 @@
 {
   "name": "webcomponent-lib",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "0.0.1",
   "type": "module",
+  "main": "./dist/web-component-lib.umd.js",
+  "module": "./dist/web-component-lib.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/web-component-lib.es.js",
+      "require": "./dist/web-component-lib.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",

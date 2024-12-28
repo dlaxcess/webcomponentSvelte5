@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test des Web Components</title>
+
+    <!-- Méthode 1: ES Modules (defer est implicite pour type="module") -->
+    <script type="module">
+      import { Counter, CounterDisplay } from './dist/web-component-lib.es.js';
+    </script>
+
+    <!-- Méthode 2: UMD (nécessite defer explicite) -->
+    <!-- 
+    <script defer src="./dist/web-component-lib.umd.js"></script>
+    <script defer>
+      // Les composants sont disponibles globalement via WebComponentLib
+      const { Counter, CounterDisplay } = WebComponentLib;
+    </script>
+    -->
+  </head>
+  <body>
+    <h1>Test des Web Components</h1>
+
+    <div>
+      <h2>Section 1 : Counter et CounterDisplay</h2>
+      <counter-component buttonheader="Mon Compteur"></counter-component>
+      <counter-display></counter-display>
+    </div>
+
+    <div>
+      <h2>Section 2 : CounterDisplay seul</h2>
+      <counter-display></counter-display>
+    </div>
+  </body>
+</html>
