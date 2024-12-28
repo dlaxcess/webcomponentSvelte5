@@ -7,7 +7,7 @@
 
     <!-- Méthode 1: ES Modules -->
     <script type="module">
-      import { Counter, CounterDisplay } from './dist/web-component-lib.es.js';
+      import { Counter, CounterDisplay } from "./dist/web-component-lib.es.js";
     </script>
 
     <!-- Méthode 2: UMD -->
@@ -17,6 +17,15 @@
       const { Counter, CounterDisplay } = WebComponentLib;
     </script>
     -->
+    <style>
+      counter-component {
+        --counter-background: red;
+      }
+
+      h2 {
+        color: red; /* not applied in DM Shadow */
+      }
+    </style>
   </head>
   <body>
     <h1>Test des Web Components (Bundle Complet)</h1>

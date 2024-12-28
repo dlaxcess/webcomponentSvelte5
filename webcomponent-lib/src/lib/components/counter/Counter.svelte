@@ -34,8 +34,9 @@
 
 <style>
   :host {
-    background-color: aqua;
     display: block;
     padding: 1rem;
+    background-color: var(--counter-background, aqua);
+    color: var(--counter-text-color, black);
   }
 </style>
