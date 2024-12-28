@@ -31,3 +31,11 @@
     count is {count}
   </button>
 </div>
+
+<style>
+  :host {
+    background-color: aqua;
+    display: block;
+    padding: 1rem;
+  }
+</style>
