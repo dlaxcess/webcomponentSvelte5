@@ -1,0 +1,17 @@
+# Development files and directories to ignore when publishing to npm
+# Note: dist/ directory is intentionally not ignored as it contains the built library files
+node_modules/
+src/
+test/
+tests/
+*.log
+*.tsbuildinfo
+.vscode/
+.idea/
+.git/
+.gitignore
+.DS_Store
+vite.config.js
+tsconfig.json
+tsconfig.node.json
+test.html

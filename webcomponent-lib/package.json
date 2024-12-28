@@ -3,6 +3,10 @@
   "private": false,
   "version": "0.0.1",
   "type": "module",
+  "description": "A library of web components built with Svelte",
+  "keywords": ["svelte", "webcomponents", "library"],
+  "author": "dlaxcess",
+  "license": "MIT",
   "main": "./dist/web-component-lib.umd.js",
   "module": "./dist/web-component-lib.es.js",
   "exports": {
