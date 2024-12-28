@@ -3,23 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test des Web Components (Bundle Complet)</title>
+    <title>Test des Web Components (Import Individuel)</title>
 
-    <!-- Méthode 1: ES Modules -->
-    <script type="module">
-      import { Counter, CounterDisplay } from './dist/web-component-lib.es.js';
-    </script>
+    <!-- Import des composants individuels -->
+    <!-- Import du Counter -->
+    <script type="module" src="./dist/components/counter.js"></script>
 
-    <!-- Méthode 2: UMD -->
+    <!-- Import du CounterDisplay -->
+    <script type="module" src="./dist/components/counter-display.js"></script>
+
+    <!-- Alternative: Bundle UMD complet -->
     <!-- 
     <script defer src="./dist/web-component-lib.umd.js"></script>
-    <script defer>
-      const { Counter, CounterDisplay } = WebComponentLib;
+    -->
+
+    <!-- 
+    <script type="module">
+      import './dist/components/counter.js';
+      import './dist/components/counter-display.js';
     </script>
     -->
   </head>
   <body>
-    <h1>Test des Web Components (Bundle Complet)</h1>
+    <h1>Test des Web Components (Import Individuel)</h1>
 
     <div>
       <h2>Section 1 : Counter et CounterDisplay</h2>

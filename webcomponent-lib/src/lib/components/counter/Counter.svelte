@@ -10,11 +10,13 @@
   };
 
   const emitCount = () => {
-    document.dispatchEvent(new CustomEvent('counter-update', { 
-      detail: { count },
-      bubbles: true,
-      composed: true 
-    }));
+    document.dispatchEvent(
+      new CustomEvent("counter-update", {
+        detail: { count },
+        bubbles: true,
+        composed: true,
+      })
+    );
   };
 
   // Émettre la valeur initiale une fois que le composant est monté

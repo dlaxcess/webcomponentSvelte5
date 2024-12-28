@@ -1,5 +1,6 @@
-import './Counter.svelte';
-import './CounterDisplay.svelte';
+// Import et enregistrement des composants
+import Counter from './components/counter/Counter.svelte';
+import CounterDisplay from './components/counter-display/CounterDisplay.svelte';
 
-export { default as Counter } from './Counter.svelte';
-export { default as CounterDisplay } from './CounterDisplay.svelte';
+// Export des composants
+export { Counter, CounterDisplay };
