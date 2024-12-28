@@ -1,26 +1,23 @@
 <svelte:options customElement="counter-component" />
 
 <script lang="ts">
+  import { counterStore } from './stores/counter';
   let { buttonHeader } = $props();
-  let count: number = $state(0);
+  
+  // Utiliser $state pour la réactivité
+  let count = $state(0);
+
+  // Synchroniser avec le store
+  $effect(() => {
+    counterStore.subscribe(value => {
+      count = value;
+    });
+  });
 
   const increment = () => {
     count += 1;
-    emitCount();
+    counterStore.set(count);
   };
-
-  const emitCount = () => {
-    document.dispatchEvent(new CustomEvent('counter-update', { 
-      detail: { count },
-      bubbles: true,
-      composed: true 
-    }));
-  };
-
-  // Émettre la valeur initiale une fois que le composant est monté
-  $effect(() => {
-    emitCount();
-  });
 </script>
 
 <div>

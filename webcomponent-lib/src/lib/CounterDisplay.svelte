@@ -1,8 +1,16 @@
 <svelte:options customElement="counter-display" />
 
 <script lang="ts">
-  let counterValue: number = $state(0);
+  import { counterStore } from './stores/counter';
   let counterExists = $state(false);
+  let count = $state(0);
+
+  // Synchroniser avec le store
+  $effect(() => {
+    counterStore.subscribe(value => {
+      count = value;
+    });
+  });
 
   $effect(() => {
     const checkCounter = () => {
@@ -13,11 +21,6 @@
     // Vérification initiale
     checkCounter();
 
-    // Écouter les mises à jour du counter
-    const handleCounterUpdate = (event: CustomEvent) => {
-      counterValue = event.detail.count;
-    };
-
     // Observer les changements du DOM pour détecter le counter
     const observer = new MutationObserver(checkCounter);
     observer.observe(document.body, { 
@@ -25,18 +28,15 @@
       subtree: true 
     });
 
-    document.addEventListener('counter-update', handleCounterUpdate as EventListener);
-
     return () => {
       observer.disconnect();
-      document.removeEventListener('counter-update', handleCounterUpdate as EventListener);
     };
   });
 </script>
 
 <div>
   {#if counterExists}
-    <p>Valeur du compteur : {counterValue}</p>
+    <p>Valeur du compteur : {count}</p>
   {:else}
     <p>Pas de counter sur cette page</p>
   {/if}
