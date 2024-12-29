@@ -29,8 +29,17 @@
 
     <div>
       <h2>Section 1 : Counter et CounterDisplay</h2>
-      <counter-component buttonheader="Mon Compteur"></counter-component>
-      <counterdisplay-component></counterdisplay-component>
+      <counter-component buttonheader="My Counter"></counter-component>
+      <counterdisplay-component>
+        <div slot="description">
+          <h3>Statistiques du Compteur</h3>
+          <p>Un exemple d'utilisation des slots dans le composant CounterDisplay.</p>
+        </div>
+        <div slot="footer">
+          <hr>
+          <p><em>Note : Les valeurs sont mises à jour en temps réel</em></p>
+        </div>
+      </counterdisplay-component>
     </div>
 
     <div>

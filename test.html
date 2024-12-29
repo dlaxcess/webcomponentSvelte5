@@ -37,8 +37,17 @@
     </div>
 
     <div>
-      <h2>Section 2 : CounterDisplay seul</h2>
-      <counterdisplay-component></counterdisplay-component>
+      <h2>Section 2 : Counter avec slot</h2>
+      <counterdisplay-component>
+        <div slot="description">
+          <h2>Mon Compteur Personnalisé</h2>
+          <p>Description : Ce compteur affiche la valeur actuelle du compteur ci-dessus.</p>
+        </div>
+        <div slot="footer">
+          <hr />
+          <small>Créé avec WebComponentSvelte5</small>
+        </div>
+      </counterdisplay-component>
     </div>
   </body>
 </html>

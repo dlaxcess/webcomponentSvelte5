@@ -9,11 +9,11 @@ pnpm create vite@latest
 
 ## Features
 
-- Framework-agnostic web components
-- Real-time counter with event system
-- Individual component imports for better tree-shaking
-- Customizable components
-- TypeScript support
+- 🎯 Framework-agnostic web components
+- 🔄 Real-time counter with event system
+- 📦 Individual component imports for better tree-shaking
+- 🎨 Customizable components with slots
+- 📱 TypeScript support
 
 ## Installation
 

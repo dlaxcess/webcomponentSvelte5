@@ -35,11 +35,13 @@
 </script>
 
 <div>
+  <slot name="description" />
   {#if counterExists}
     <p>Valeur du compteur : {counterValue}</p>
   {:else}
     <p>Pas de counter sur cette page</p>
   {/if}
+  <slot name="footer" />
 </div>
 
 <style>
