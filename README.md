@@ -51,6 +51,18 @@ Then use them in your HTML:
 
 <!-- Counter display component that shows the current count -->
 <counterdisplay-component></counterdisplay-component>
+
+<!-- Counter display with slots -->
+<counterdisplay-component>
+  <div slot="description">
+    <h2>My Custom Counter</h2>
+    <p>With reactive update</p>
+  </div>
+  <div slot="footer">
+    <hr />
+    <small>Created with ❤️</small>
+  </div>
+</counterdisplay-component>
 ```
 
 ### Framework Integration
