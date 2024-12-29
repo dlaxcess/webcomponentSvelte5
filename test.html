@@ -7,12 +7,12 @@
 
     <!-- Méthode 1: ES Modules -->
     <script type="module">
-      import { Counter, CounterDisplay } from "./dist/webcomponentsvelte5.es.js";
+      import "./dist/webComponentSvelte5.es.js";
     </script>
 
     <!-- Méthode 2: UMD -->
     <!-- 
-    <script defer src="./dist/webcomponentsvelte5.umd.js"></script>
+    <script defer src="./dist/webComponentSvelte5.umd.js"></script>
     <script defer>
       const { Counter, CounterDisplay } = WebComponentSvelte5;
     </script>
@@ -33,12 +33,12 @@
     <div>
       <h2>Section 1 : Counter et CounterDisplay</h2>
       <counter-component buttonheader="Mon Compteur"></counter-component>
-      <counter-display></counter-display>
+      <counterdisplay-component></counterdisplay-component>
     </div>
 
     <div>
       <h2>Section 2 : CounterDisplay seul</h2>
-      <counter-display></counter-display>
+      <counterdisplay-component></counterdisplay-component>
     </div>
   </body>
 </html>

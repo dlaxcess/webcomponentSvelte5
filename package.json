@@ -7,17 +7,28 @@
   "keywords": ["svelte", "webcomponents", "library", "svelte5"],
   "author": "dlaxcess",
   "license": "MIT",
-  "main": "./dist/webcomponentsvelte5.umd.js",
-  "module": "./dist/webcomponentsvelte5.es.js",
+  "main": "./dist/webComponentSvelte5.umd.js",
+  "module": "./dist/webComponentSvelte5.es.js",
+  "types": "./src/lib/index.d.ts",
+  "files": [
+    "dist",
+    "src/lib/index.d.ts"
+  ],
   "exports": {
     ".": {
-      "import": "./dist/webcomponentsvelte5.es.js",
-      "require": "./dist/webcomponentsvelte5.umd.js"
+      "types": "./src/lib/index.d.ts",
+      "import": "./dist/webComponentSvelte5.es.js",
+      "require": "./dist/webComponentSvelte5.umd.js"
+    },
+    "./components/counter": {
+      "types": "./src/lib/index.d.ts",
+      "import": "./dist/components/counter.js"
+    },
+    "./components/counterDisplay": {
+      "types": "./src/lib/index.d.ts",
+      "import": "./dist/components/counterDisplay.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build && vite build --mode components",

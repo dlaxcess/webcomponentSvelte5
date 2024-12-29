@@ -1,4 +1,4 @@
-<svelte:options customElement="counter-display" />
+<svelte:options customElement="counterdisplay-component" />
 
 <script lang="ts">
   let counterValue: number = $state(0);

@@ -14,7 +14,7 @@ const defaultConfig = defineConfig({
       entry: './src/lib/index.js',
       name: 'WebComponentSvelte5',
       formats: ['es', 'umd'],
-      fileName: (format) => `webcomponentsvelte5.${format}.js`
+      fileName: (format) => `webComponentSvelte5.${format}.js`
     }
   },
   plugins: [sveltePlugin]
@@ -26,8 +26,8 @@ const componentsConfig = defineConfig({
     outDir: 'dist/components',
     rollupOptions: {
       input: {
-        'counter': './src/lib/components/counter/Counter.svelte',
-        'counter-display': './src/lib/components/counter-display/CounterDisplay.svelte'
+        'counter': './src/lib/components/counter/index.js',
+        'counterDisplay': './src/lib/components/counterDisplay/index.js'
       },
       output: {
         format: 'es',
