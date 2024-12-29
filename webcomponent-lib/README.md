@@ -2,45 +2,50 @@
 
 A library of web components built with Svelte 5.
 
+```bash
+# Original install command for Svelte 5
+pnpm create vite@latest
+```
+
 ## Installation
 
 ```bash
-npm install webcomponent-lib
+pnpm install webcomponent-lib
 ```
 
 ## Usage
 
-```javascript
-// Import the components you need
-import 'webcomponent-lib/dist/web-component-lib.es.js';
-
-// Use them in your HTML
-<my-counter></my-counter>
-```
-
-## Available Components
-
-### Counter Component
-A simple counter web component that demonstrates the basic functionality.
-
 ```html
-<my-counter></my-counter>
+<!-- Import the library -->
+<script type="module">
+  import { Counter, CounterDisplay } from "./dist/web-component-lib.es.js";
+</script>
+
+<!-- Or Import the components you need -->
+<script type="module" src="./dist/components/counter.js"></script>
+<script type="module" src="./dist/components/counter-display.js"></script>
+
+<!-- Use them in your HTML -->
+<counter-component></counter-component>
+<counter-display></counter-display>
 ```
 
-## Development
+### React Usage
 
-```bash
-# Install dependencies
-npm install
+```jsx
+// App.jsx or any component file
+import { Counter, CounterDisplay } from "webcomponent-lib";
 
-# Start development server
-npm run dev
+function App() {
+  return (
+    <div>
+      <counter-component buttonheader="React Counter"></counter-component>
+      <counter-display></counter-display>
+    </div>
+  );
+}
 
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+export default App;
 ```
 
 ## License
