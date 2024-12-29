@@ -1,18 +1,18 @@
 {
-  "name": "webcomponent-lib",
+  "name": "webcomponentsvelte5",
   "private": false,
   "version": "0.0.1",
   "type": "module",
-  "description": "A library of web components built with Svelte",
-  "keywords": ["svelte", "webcomponents", "library"],
+  "description": "A library of web components built with Svelte 5",
+  "keywords": ["svelte", "webcomponents", "library", "svelte5"],
   "author": "dlaxcess",
   "license": "MIT",
-  "main": "./dist/web-component-lib.umd.js",
-  "module": "./dist/web-component-lib.es.js",
+  "main": "./dist/webcomponentsvelte5.umd.js",
+  "module": "./dist/webcomponentsvelte5.es.js",
   "exports": {
     ".": {
-      "import": "./dist/web-component-lib.es.js",
-      "require": "./dist/web-component-lib.umd.js"
+      "import": "./dist/webcomponentsvelte5.es.js",
+      "require": "./dist/webcomponentsvelte5.umd.js"
     }
   },
   "files": [

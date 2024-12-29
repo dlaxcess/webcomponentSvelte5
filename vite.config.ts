@@ -12,9 +12,9 @@ const defaultConfig = defineConfig({
   build: {
     lib: {
       entry: './src/lib/index.js',
-      name: 'WebComponentLib',
+      name: 'WebComponentSvelte5',
       formats: ['es', 'umd'],
-      fileName: (format) => `web-component-lib.${format}.js`
+      fileName: (format) => `webcomponentsvelte5.${format}.js`
     }
   },
   plugins: [sveltePlugin]
