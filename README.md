@@ -71,8 +71,8 @@ Then use them in your HTML:
 
 ```jsx
 // App.jsx
-import "webcomponentsvelte5/dist/components/counter.js";
-import "webcomponentsvelte5/dist/components/counterDisplay.js";
+import "webcomponentsvelte5/components/counter";
+import "webcomponentsvelte5/components/counterDisplay";
 
 function App() {
   return (
