@@ -7,6 +7,9 @@ A library of web components built with Svelte 5. This library provides reusable 
 pnpm create vite@latest
 ```
 
+Partially built with WindSurf IDE.
+See : https://www.youtube.com/watch?v=0g1NPN4aPBI
+
 ## Features
 
 - 🎯 Framework-agnostic web components
