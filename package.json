@@ -4,7 +4,12 @@
   "version": "0.0.1",
   "type": "module",
   "description": "A library of web components built with Svelte 5",
-  "keywords": ["svelte", "webcomponents", "library", "svelte5"],
+  "keywords": [
+    "svelte",
+    "webcomponents",
+    "library",
+    "svelte5"
+  ],
   "author": "dlaxcess",
   "license": "MIT",
   "main": "./dist/webComponentSvelte5.umd.js",
@@ -21,13 +26,9 @@
       "import": "./dist/webComponentSvelte5.es.js",
       "require": "./dist/webComponentSvelte5.umd.js"
     },
-    "./components/counter": {
-      "types": "./src/lib/components/counter/types.ts",
-      "import": "./dist/components/counter.js"
-    },
-    "./components/counterDisplay": {
-      "types": "./src/lib/components/counterDisplay/types.ts",
-      "import": "./dist/components/counterDisplay.js"
+    "./components/*": {
+      "types": "./src/lib/components/*/types.ts",
+      "import": "./dist/components/*.js"
     }
   },
   "scripts": {
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.2",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/node": "^22.10.10",
     "svelte": "^5.14.3",
     "svelte-check": "^4.1.1",
     "tslib": "^2.8.1",

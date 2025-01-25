@@ -1,11 +1,29 @@
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import type { UserConfig, ConfigEnv } from 'vite';
+import { readdirSync, Dirent } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Configuration commune pour les plugins Svelte
 const sveltePlugin = svelte({
   compilerOptions: { customElement: true }
 });
+
+// Fonction pour générer dynamiquement les inputs des composants
+function getComponentInputs(): Record<string, string> {
+  const componentsDir = join(__dirname, 'src/lib/components');
+  const components = readdirSync(componentsDir, { withFileTypes: true })
+    .filter((dirent: Dirent) => dirent.isDirectory())
+    .reduce((acc: Record<string, string>, dirent: Dirent) => ({
+      ...acc,
+      [dirent.name]: join(componentsDir, dirent.name, 'index.js')
+    }), {});
+  
+  return components;
+}
 
 // Configuration par défaut pour la lib complète
 const defaultConfig = defineConfig({
@@ -25,10 +43,7 @@ const componentsConfig = defineConfig({
   build: {
     outDir: 'dist/components',
     rollupOptions: {
-      input: {
-        'counter': './src/lib/components/counter/index.js',
-        'counterDisplay': './src/lib/components/counterDisplay/index.js'
-      },
+      input: getComponentInputs(),
       output: {
         format: 'es',
         entryFileNames: '[name].js'
