@@ -1,7 +1,7 @@
 {
   "name": "webcomponentsvelte5",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "description": "A library of web components built with Svelte 5",
   "keywords": [
