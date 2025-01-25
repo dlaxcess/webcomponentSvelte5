@@ -26,7 +26,7 @@
 </script>
 
 <div>
-  <h2>{buttonHeader}</h2>
+  Title : <h2>{buttonHeader}</h2>
   <button onclick={increment}>
     count is {count}
   </button>

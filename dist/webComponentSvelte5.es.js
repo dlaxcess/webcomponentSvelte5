@@ -4,7 +4,7 @@ var te = (t) => {
 };
 var Ge = (t, e, r) => e in t ? Je(t, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : t[e] = r;
 var A = (t, e, r) => Ge(t, typeof e != "symbol" ? e + "" : e, r), ee = (t, e, r) => e.has(t) || te("Cannot " + r);
-var E = (t, e, r) => (ee(t, e, "read from private field"), r ? r.call(t) : e.get(t)), At = (t, e, r) => e.has(t) ? te("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), Dt = (t, e, r, n) => (ee(t, e, "write to private field"), n ? n.call(t, r) : e.set(t, r), r);
+var E = (t, e, r) => (ee(t, e, "read from private field"), r ? r.call(t) : e.get(t)), Dt = (t, e, r) => e.has(t) ? te("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(t) : e.set(t, r), Lt = (t, e, r, n) => (ee(t, e, "write to private field"), n ? n.call(t, r) : e.set(t, r), r);
 const Ze = "5";
 typeof window < "u" && (window.__svelte || (window.__svelte = { v: /* @__PURE__ */ new Set() })).v.add(Ze);
 const Qe = 2, oe = "[", fe = "[!", ae = "]", lt = {}, T = Symbol(), Xe = ["touchstart", "touchmove"];
@@ -17,7 +17,7 @@ function ur(t) {
   for (var e = 0; e < t.length; e++)
     t[e]();
 }
-const D = 2, de = 4, xt = 8, Kt = 16, L = 32, rt = 64, Pt = 128, W = 256, wt = 512, O = 1024, M = 2048, dt = 4096, tt = 8192, nt = 16384, lr = 32768, zt = 65536, ir = 1 << 19, ve = 1 << 20, Lt = Symbol("$state"), or = Symbol("legacy props");
+const D = 2, de = 4, kt = 8, Kt = 16, L = 32, rt = 64, qt = 128, W = 256, wt = 512, O = 1024, M = 2048, dt = 4096, tt = 8192, nt = 16384, lr = 32768, zt = 65536, ir = 1 << 19, ve = 1 << 20, Pt = Symbol("$state"), or = Symbol("legacy props");
 function he(t) {
   return t === this.v;
 }
@@ -66,7 +66,7 @@ function P(t, e) {
   };
   return r;
 }
-function qt(t) {
+function Ft(t) {
   return /* @__PURE__ */ wr(P(t));
 }
 // @__NO_SIDE_EFFECTS__
@@ -84,7 +84,7 @@ function N(t, e) {
   (q === null || !q.includes(t)) && yr(), br(t, e);
 }
 function br(t, e) {
-  return t.equals(e) || (t.v = e, t.version = qe(), me(t, M), v !== null && v.f & O && !(v.f & L) && (g !== null && g.includes(t) ? (I(v, M), Ot(v)) : j === null ? Ir([t]) : j.push(t))), e;
+  return t.equals(e) || (t.v = e, t.version = qe(), me(t, M), v !== null && v.f & O && !(v.f & L) && (g !== null && g.includes(t) ? (I(v, M), Rt(v)) : j === null ? Ir([t]) : j.push(t))), e;
 }
 function me(t, e) {
   var r = t.reactions;
@@ -95,7 +95,7 @@ function me(t, e) {
         /** @type {Derived} */
         u,
         dt
-      ) : Ot(
+      ) : Rt(
         /** @type {Effect} */
         u
       )));
@@ -114,7 +114,7 @@ function H(t) {
     throw Wt(), lt;
   return p = t;
 }
-function kt() {
+function Ct() {
   return H(
     /** @type {TemplateNode} */
     /* @__PURE__ */ st(p)
@@ -147,7 +147,7 @@ function Er() {
   }
 }
 function G(t, e = null, r) {
-  if (typeof t != "object" || t === null || Lt in t)
+  if (typeof t != "object" || t === null || Pt in t)
     return t;
   const n = sr(t);
   if (n !== rr && n !== nr)
@@ -185,7 +185,7 @@ function G(t, e = null, r) {
       },
       get(o, f, a) {
         var $;
-        if (f === Lt)
+        if (f === Pt)
           return t;
         var c = s.get(f), _ = f in o;
         if (c === void 0 && (!_ || ($ = z(o, f)) != null && $.writable) && (c = P(G(_ ? o[f] : T, i)), s.set(f, c)), c !== void 0) {
@@ -213,7 +213,7 @@ function G(t, e = null, r) {
       },
       has(o, f) {
         var d;
-        if (f === Lt)
+        if (f === Pt)
           return !0;
         var a = s.get(f), c = a !== void 0 && a.v !== T || Reflect.has(o, f);
         if (a !== void 0 || v !== null && (!c || (d = z(o, f)) != null && d.writable)) {
@@ -267,7 +267,7 @@ function re(t, e = 1) {
   N(t, t.v + e);
 }
 var ne, pe, ye;
-function Ft() {
+function It() {
   if (ne === void 0) {
     ne = window;
     var t = Element.prototype, e = Node.prototype;
@@ -300,7 +300,7 @@ function ot(t, e) {
   }
   return H(r), r;
 }
-function It(t, e = 1, r = !1) {
+function Tt(t, e = 1, r = !1) {
   let n = x ? p : t;
   for (var s; e--; )
     s = n, n = /** @type {TemplateNode} */
@@ -415,13 +415,13 @@ function ut(t, e, r, n = !0) {
   if (r) {
     var i = Q;
     try {
-      ue(!0), Nt(l), l.f |= lr;
+      ue(!0), Ot(l), l.f |= lr;
     } catch (a) {
       throw Y(l), a;
     } finally {
       ue(i);
     }
-  } else e !== null && Ot(l);
+  } else e !== null && Rt(l);
   var o = r && l.deps === null && l.first === null && l.nodes_start === null && l.teardown === null && (l.f & ve) === 0;
   if (!o && !s && n && (u !== null && Nr(l, u), h !== null && h.f & D)) {
     var f = (
@@ -468,16 +468,16 @@ function Te(t) {
   return ut(de, t, !1);
 }
 function Sr(t) {
-  return ut(xt, t, !0);
+  return ut(kt, t, !0);
 }
 function xe(t) {
   return ke(t);
 }
 function ke(t, e = 0) {
-  return ut(xt | Kt | e, t, !0);
+  return ut(kt | Kt | e, t, !0);
 }
 function jt(t, e = !0) {
-  return ut(xt | L, t, !0, e);
+  return ut(kt | L, t, !0, e);
 }
 function Ce(t) {
   var e = t.teardown;
@@ -568,7 +568,7 @@ function se(t) {
 }
 function Ae(t, e) {
   if (t.f & tt) {
-    vt(t) && Nt(t), t.f ^= tt;
+    vt(t) && Ot(t), t.f ^= tt;
     for (var r = t.first; r !== null; ) {
       var n = r.next, s = (r.f & zt) !== 0 || (r.f & L) !== 0;
       Ae(r, s ? e : !1), r = n;
@@ -578,17 +578,17 @@ function Ae(t, e) {
         (u.is_global || e) && u.in();
   }
 }
-let Tt = !1, Ht = [];
+let xt = !1, Ht = [];
 function De() {
-  Tt = !1;
+  xt = !1;
   const t = Ht.slice();
   Ht = [], ur(t);
 }
 function Lr(t) {
-  Tt || (Tt = !0, queueMicrotask(De)), Ht.push(t);
+  xt || (xt = !0, queueMicrotask(De)), Ht.push(t);
 }
 function Pr() {
-  Tt && De();
+  xt && De();
 }
 const Le = 0, qr = 1;
 let $t = !1, mt = Le, at = !1, ct = null, Q = !1, Gt = !1;
@@ -654,21 +654,21 @@ function vt(t) {
 }
 function Mr(t, e) {
   for (var r = e; r !== null; ) {
-    if (r.f & Pt)
+    if (r.f & qt)
       try {
         r.fn(t);
         return;
       } catch {
-        r.f ^= Pt;
+        r.f ^= qt;
       }
     r = r.parent;
   }
   throw $t = !1, t;
 }
 function Hr(t) {
-  return (t.f & nt) === 0 && (t.parent === null || (t.parent.f & Pt) === 0);
+  return (t.f & nt) === 0 && (t.parent === null || (t.parent.f & qt) === 0);
 }
-function Ct(t, e, r, n) {
+function Nt(t, e, r, n) {
   if ($t) {
     if (r === null && ($t = !1), Hr(e))
       throw t;
@@ -730,7 +730,7 @@ function _t(t, e) {
     for (var n = e; n < r.length; n++)
       Yr(t, r[n]);
 }
-function Nt(t) {
+function Ot(t) {
   var e = t.f;
   if (!(e & nt)) {
     I(t, O);
@@ -741,7 +741,7 @@ function Nt(t) {
       var s = Fe(t);
       t.teardown = typeof s == "function" ? s : null, t.version = Pe;
     } catch (u) {
-      Ct(u, t, r, n || t.ctx);
+      Nt(u, t, r, n || t.ctx);
     } finally {
       v = r;
     }
@@ -754,7 +754,7 @@ function Ie() {
       vr();
     } catch (t) {
       if (ct !== null)
-        Ct(t, ct, null);
+        Nt(t, ct, null);
       else
         throw t;
     }
@@ -786,9 +786,9 @@ function Vr(t) {
       var n = t[r];
       if (!(n.f & (nt | tt)))
         try {
-          vt(n) && (Nt(n), n.deps === null && n.first === null && n.nodes_start === null && (n.teardown === null ? Re(n) : n.fn = null));
+          vt(n) && (Ot(n), n.deps === null && n.first === null && n.nodes_start === null && (n.teardown === null ? Re(n) : n.fn = null));
         } catch (s) {
-          Ct(s, n, null, n.ctx);
+          Nt(s, n, null, n.ctx);
         }
     }
 }
@@ -798,7 +798,7 @@ function Br() {
   const t = U;
   U = [], je(t), at || (X = 0, ct = null);
 }
-function Ot(t) {
+function Rt(t) {
   mt === Le && (at || (at = !0, queueMicrotask(Br))), ct = t;
   for (var e = t; e.parent !== null; ) {
     e = e.parent;
@@ -815,14 +815,14 @@ function Me(t, e) {
   t: for (; r !== null; ) {
     var s = r.f, u = (s & L) !== 0, l = u && (s & O) !== 0, i = r.next;
     if (!l && !(s & tt))
-      if (s & xt) {
+      if (s & kt) {
         if (u)
           r.f ^= O;
         else
           try {
-            vt(r) && Nt(r);
+            vt(r) && Ot(r);
           } catch (c) {
-            Ct(c, r, null, r.ctx);
+            Nt(c, r, null, r.ctx);
           }
         var o = r.first;
         if (o !== null) {
@@ -876,7 +876,7 @@ function w(t) {
   if (h !== null) {
     q !== null && q.includes(t) && pr();
     var s = h.deps;
-    g === null && s !== null && s[C] === t ? C++ : g === null ? g = [t] : g.push(t), j !== null && v !== null && v.f & O && !(v.f & L) && j.includes(t) && (I(v, M), Ot(v));
+    g === null && s !== null && s[C] === t ? C++ : g === null ? g = [t] : g.push(t), j !== null && v !== null && v.f & O && !(v.f & L) && j.includes(t) && (I(v, M), Rt(v));
   } else if (r && /** @type {Derived} */
   t.deps === null)
     for (var u = (
@@ -1027,7 +1027,7 @@ function Vt(t, e) {
   r.nodes_start === null && (r.nodes_start = t, r.nodes_end = e);
 }
 // @__NO_SIDE_EFFECTS__
-function Rt(t, e) {
+function St(t, e) {
   var r = (e & Qe) !== 0, n, s = !t.startsWith("<!>");
   return () => {
     if (x)
@@ -1043,7 +1043,7 @@ function Rt(t, e) {
 }
 function ft(t, e) {
   if (x) {
-    v.nodes_end = p, kt();
+    v.nodes_end = p, Ct();
     return;
   }
   t !== null && t.before(
@@ -1059,7 +1059,7 @@ function Ye(t, e) {
   return Ve(t, e);
 }
 function Jr(t, e) {
-  Ft(), e.intro = e.intro ?? !1;
+  It(), e.intro = e.intro ?? !1;
   const r = e.target, n = x, s = p;
   try {
     for (var u = (
@@ -1074,7 +1074,7 @@ function Jr(t, e) {
     Z(!0), H(
       /** @type {Comment} */
       u
-    ), kt();
+    ), Ct();
     const l = Ve(t, { ...e, anchor: u });
     if (p === null || p.nodeType !== 8 || /** @type {Comment} */
     p.data !== ae)
@@ -1083,7 +1083,7 @@ function Jr(t, e) {
     l;
   } catch (l) {
     if (l === lt)
-      return e.recover === !1 && hr(), Ft(), Tr(r), Z(!1), Ye(t, e);
+      return e.recover === !1 && hr(), It(), Tr(r), Z(!1), Ye(t, e);
     throw l;
   } finally {
     Z(n), H(s);
@@ -1091,7 +1091,7 @@ function Jr(t, e) {
 }
 const J = /* @__PURE__ */ new Map();
 function Ve(t, { target: e, anchor: r, props: n = {}, events: s, context: u, intro: l = !0 }) {
-  Ft();
+  It();
   var i = /* @__PURE__ */ new Set(), o = (c) => {
     for (var _ = 0; _ < c.length; _++) {
       var d = c[_];
@@ -1142,7 +1142,7 @@ function Gr(t, e) {
   return r ? (Ut.delete(t), r(e)) : Promise.resolve();
 }
 function Zr(t, e, r = !1) {
-  x && kt();
+  x && Ct();
   var n = t, s = null, u = null, l = T, i = r ? zt : 0, o = !1;
   const f = (c, _ = !0) => {
     o = !0, a(_, c);
@@ -1168,7 +1168,7 @@ function Zr(t, e, r = !1) {
 }
 function ie(t, e, r, n, s) {
   var i;
-  x && kt();
+  x && Ct();
   var u = (i = e.$$slots) == null ? void 0 : i[r], l = !1;
   u === !0 && (u = e[r === "default" ? "children" : r], l = !0), u === void 0 || u(t, l ? () => n : n);
 }
@@ -1230,8 +1230,8 @@ function Xr(t, e, r, n) {
   );
   return function(m, b) {
     if (arguments.length > 0) {
-      const St = b ? w(S) : m;
-      return S.equals(St) || (d = !0, N(y, St), f && i !== void 0 && (i = St), Ur(() => w(S))), m;
+      const At = b ? w(S) : m;
+      return S.equals(At) || (d = !0, N(y, At), f && i !== void 0 && (i = At), Ur(() => w(S))), m;
     }
     return w(S);
   };
@@ -1248,9 +1248,9 @@ class en {
    */
   constructor(e) {
     /** @type {any} */
-    At(this, F);
+    Dt(this, F);
     /** @type {Record<string, any>} */
-    At(this, R);
+    Dt(this, R);
     var u;
     var r = /* @__PURE__ */ new Map(), n = (l, i) => {
       var o = /* @__PURE__ */ $e(i);
@@ -1270,14 +1270,14 @@ class en {
         }
       }
     );
-    Dt(this, R, (e.hydrate ? Jr : Ye)(e.component, {
+    Lt(this, R, (e.hydrate ? Jr : Ye)(e.component, {
       target: e.target,
       anchor: e.anchor,
       props: s,
       context: e.context,
       intro: e.intro ?? !1,
       recover: e.recover
-    })), (!((u = e == null ? void 0 : e.props) != null && u.$$host) || e.sync === !1) && Zt(), Dt(this, F, s.$$events);
+    })), (!((u = e == null ? void 0 : e.props) != null && u.$$host) || e.sync === !1) && Zt(), Lt(this, F, s.$$events);
     for (const l of Object.keys(E(this, R)))
       l === "$set" || l === "$destroy" || l === "$on" || gt(this, l, {
         get() {
@@ -1532,14 +1532,14 @@ function Ke(t, e, r, n, s, u) {
 const nn = (t, e, r) => {
   N(e, w(e) + 1), r();
 };
-var sn = /* @__PURE__ */ Rt("<div><h2> </h2> <button> </button></div>");
+var sn = /* @__PURE__ */ St("<div>Title : <h2> </h2> <button> </button></div>");
 const un = {
   hash: "svelte-zq967x",
   code: ":host {display:block;padding:1rem;background-color:var(--counter-background, aqua);color:var(--counter-text-color, black);}"
 };
 function ze(t, e) {
   Qt(e, !0), Be(t, un);
-  let r = Xr(e, "buttonHeader"), n = qt(0);
+  let r = Xr(e, "buttonHeader"), n = Ft(0);
   const s = () => {
     document.dispatchEvent(new CustomEvent("counter-update", {
       detail: { count: w(n) },
@@ -1550,9 +1550,9 @@ function ze(t, e) {
   Ee(() => {
     s();
   });
-  var u = sn(), l = ot(u), i = ot(l, !0);
+  var u = sn(), l = Tt(ot(u)), i = ot(l, !0);
   it(l);
-  var o = It(l, 2);
+  var o = Tt(l, 2);
   o.__click = [nn, n, s];
   var f = ot(o);
   return it(o), it(u), xe(() => {
@@ -1576,14 +1576,14 @@ class ln extends HTMLElement {
   }
 }
 customElements.get("counter-component") || customElements.define("counter-component", ln);
-var on = /* @__PURE__ */ Rt("<p> </p>"), fn = /* @__PURE__ */ Rt("<p>Pas de counter sur cette page</p>"), an = /* @__PURE__ */ Rt('<div class="svelte-jz8ejc"><!> <!> <!></div>');
+var on = /* @__PURE__ */ St("<p> </p>"), fn = /* @__PURE__ */ St("<p>Pas de counter sur cette page</p>"), an = /* @__PURE__ */ St('<div class="svelte-jz8ejc"><!> <!> <!></div>');
 const cn = {
   hash: "svelte-jz8ejc",
   code: "div.svelte-jz8ejc {padding:1rem;border:1px solid #ccc;border-radius:4px;margin:1rem 0;}"
 };
 function We(t, e) {
   Qt(e, !0), Be(t, cn);
-  let r = qt(0), n = qt(!1);
+  let r = Ft(0), n = Ft(!1);
   Ee(() => {
     const a = () => {
       const d = document.querySelector("counter-component");
@@ -1599,7 +1599,7 @@ function We(t, e) {
   });
   var s = an(), u = ot(s);
   ie(u, e, "description", {});
-  var l = It(u, 2);
+  var l = Tt(u, 2);
   {
     var i = (a) => {
       var c = on(), _ = ot(c);
@@ -1612,7 +1612,7 @@ function We(t, e) {
       w(n) ? a(i) : a(o, !1);
     });
   }
-  var f = It(l, 2);
+  var f = Tt(l, 2);
   ie(f, e, "footer", {}), it(s), ft(t, s), Xt();
 }
 customElements.define("counterdisplay-component", Ke(We, {}, ["description", "footer"], [], !0));
