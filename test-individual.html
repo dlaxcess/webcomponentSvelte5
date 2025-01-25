@@ -12,6 +12,9 @@
     <!-- Import du CounterDisplay -->
     <script type="module" src="./dist/components/counterDisplay.js"></script>
 
+    <!-- Import du ActionButton -->
+    <script type="module" src="./dist/components/actionButton.js"></script>
+
     <!-- Alternative: Bundle UMD complet -->
     <!-- 
     <script defer src="./dist/web-component-lib.umd.js"></script>
@@ -36,7 +39,7 @@
           <p>Un exemple d'utilisation des slots dans le composant CounterDisplay.</p>
         </div>
         <div slot="footer">
-          <hr>
+          <hr />
           <p><em>Note : Les valeurs sont mises à jour en temps réel</em></p>
         </div>
       </counterdisplay-component>
@@ -45,6 +48,19 @@
     <div>
       <h2>Section 2 : CounterDisplay seul</h2>
       <counterdisplay-component></counterdisplay-component>
+    </div>
+
+    <div>
+      <h2>Section 3 : Action Button</h2>
+      <div style="display: flex; gap: 1rem">
+        <action-button action="copy" entry="Texte à copier" title="Copier le texte" text="Cliquez pour copier">
+          <button slot="button">Copier</button>
+        </action-button>
+        <action-button action="share" entry="https://example.com" title="Partager le lien" text="Cliquez pour partager">
+          <button slot="button">Share</button>
+        </action-button>
+        <a href="test">test</a>
+      </div>
     </div>
   </body>
 </html>
