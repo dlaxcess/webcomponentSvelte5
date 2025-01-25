@@ -12,7 +12,8 @@
   "types": "./src/lib/index.d.ts",
   "files": [
     "dist",
-    "src/lib/index.d.ts"
+    "src/lib/**/*.d.ts",
+    "src/lib/**/*.ts"
   ],
   "exports": {
     ".": {
@@ -21,11 +22,11 @@
       "require": "./dist/webComponentSvelte5.umd.js"
     },
     "./components/counter": {
-      "types": "./src/lib/index.d.ts",
+      "types": "./src/lib/components/counter/types.ts",
       "import": "./dist/components/counter.js"
     },
     "./components/counterDisplay": {
-      "types": "./src/lib/index.d.ts",
+      "types": "./src/lib/components/counterDisplay/types.ts",
       "import": "./dist/components/counterDisplay.js"
     }
   },
