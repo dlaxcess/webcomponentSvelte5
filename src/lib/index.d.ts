@@ -40,7 +40,7 @@ declare module "webcomponentsvelte5/components/securePinPad" {
   export * from "./components/securePinPad/types";
 }
 
-declare module "webcomponentsvelte5/components/toaster" {
+declare module "webcomponents/components/toaster" {
   export default function (): void;
   export * from "./components/toaster/types";
 }

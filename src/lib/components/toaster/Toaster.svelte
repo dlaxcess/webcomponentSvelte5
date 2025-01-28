@@ -30,7 +30,7 @@
       toastType = event.detail.type ?? toastType;
       toastDuration = event.detail.duration ?? toastDuration;
 
-      if (toastDuration > 0) {
+      if (toastDuration) {
         setTimeout(() => {
           resetTaost();
         }, toastDuration);
@@ -39,11 +39,11 @@
       }
     };
 
-    document.addEventListener("pc-toast-emit", handleToastUpdate as EventListener);
+    document.addEventListener("showToast", handleToastUpdate as EventListener);
 
     // utile ?
     return () => {
-      document.removeEventListener("pc-toast-emit", handleToastUpdate as EventListener);
+      document.removeEventListener("showToast", handleToastUpdate as EventListener);
     };
   });
 </script>
