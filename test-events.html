@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Events System</title>
+    <script type="module">
+        import { EventRouter } from './dist/events/index.js';
+        import './dist/components/actionButton.js';
+        import './dist/components/notifier.js';
+    </script>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test du système d'événements</h1>
+        
+        <div class="buttons-container">
+            <action-button 
+                type="success"
+                message="Opération réussie !">
+                Succès
+            </action-button>
+
+            <action-button 
+                type="error"
+                message="Une erreur est survenue">
+                Erreur
+            </action-button>
+        </div>
+
+        <notifier-component></notifier-component>
+    </div>
+</body>
+</html>

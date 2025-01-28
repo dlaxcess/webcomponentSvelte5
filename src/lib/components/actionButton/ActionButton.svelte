@@ -8,7 +8,7 @@
     const event = new CustomEvent("actionButtonEmit", {
       detail: {
         type,
-        message
+        message,
       },
       bubbles: true,
       composed: true,

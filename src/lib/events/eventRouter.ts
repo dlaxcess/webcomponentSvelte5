@@ -1,13 +1,18 @@
+// Types pour les événements spécifiques
 interface ActionButtonEventDetail {
   type: "success" | "error";
   message: string;
 }
 
+type EventHandler = (event: CustomEvent) => void;
+
 class EventRouter {
   private static instance: EventRouter;
+  private eventHandlers: Map<string, EventHandler>;
 
   private constructor() {
-    this.initializeListeners();
+    this.eventHandlers = new Map();
+    this.registerHandlers();
   }
 
   public static getInstance(): EventRouter {
@@ -17,37 +22,41 @@ class EventRouter {
     return EventRouter.instance;
   }
 
-  private initializeListeners() {
-    document.addEventListener("actionButtonEmit", this.handleActionButtonEvent as EventListener);
+  private registerHandlers() {
+    // Handler pour actionButtonEmit
+    const actionButtonHandler = (event: CustomEvent<ActionButtonEventDetail>) => {
+      const { type, message } = event.detail;
+      const duration = type === "error" ? 0 : 500;
+      const sourceElement = event.target as HTMLElement;
+
+      const toastEvent = new CustomEvent("showToast", {
+        detail: {
+          message,
+          type,
+          duration,
+          sourceElement
+        },
+        bubbles: true,
+        composed: true,
+      });
+
+      sourceElement.dispatchEvent(toastEvent);
+    };
+
+    this.addEventHandler("actionButtonEmit", actionButtonHandler);
+
+    // Exemple: Handler pour un autre type d'événement
+    // const otherHandler = (event: CustomEvent) => {
+    //   // Logique spécifique pour cet événement
+    // };
+    // this.addEventHandler("otherEvent", otherHandler);
   }
 
-  private handleActionButtonEvent = (event: CustomEvent<ActionButtonEventDetail>) => {
-    const { type, message } = event.detail;
-
-    // Définir la durée en fonction du type
-    const duration = type === "error" ? 0 : 500;
-
-    // Récupérer l'élément source
-    const sourceElement = event.target as HTMLElement;
-
-    // Émettre l'événement showToast
-    const toastEvent = new CustomEvent("showToast", {
-      detail: {
-        message,
-        type,
-        duration,
-        sourceElement
-      },
-      bubbles: true,
-      composed: true,
-    });
-
-    // Émettre depuis la source de l'événement original
-    sourceElement.dispatchEvent(toastEvent);
-  };
+  // Méthode publique pour ajouter dynamiquement des handlers
+  public addEventHandler(eventType: string, handler: EventHandler) {
+    this.eventHandlers.set(eventType, handler);
+    document.addEventListener(eventType, handler as EventListener);
+  }
 }
-
-// Initialiser le routeur au chargement du module
-EventRouter.getInstance();
 
 export default EventRouter;

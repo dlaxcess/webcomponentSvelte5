@@ -1,72 +1,73 @@
-<svelte:options customElement="toaster-component" />
+<svelte:options customElement="notifier-component" />
 
 <script lang="ts">
   import { fade, scale } from "svelte/transition";
 
-  let toastMessage = $state("");
-  let toastType = $state("success");
-  let toastDuration = $state(500);
+  let notifierMessage = $state("");
+  let notifierType = $state("success");
+  let notifierDuration = $state(500);
   let closeable = $state("");
   let embeded = $state("");
 
-  const resetTaost = () => {
+  const resetNotifier = () => {
     document.body.prepend($host());
-    toastMessage = "";
-    toastType = "success";
-    toastDuration = 500;
+    notifierMessage = "";
+    notifierType = "success";
+    notifierDuration = 500;
+    closeable = "";
+    embeded = "";
   };
 
   $effect(() => {
-    const handleToastUpdate = (event: CustomEvent) => {
-      closeable = "";
-      embeded = "";
+    const handleNotifierUpdate = (event: CustomEvent) => {
+      resetNotifier();
 
       if (event.target !== document) embeded = "embeded";
 
       if (event.target instanceof HTMLElement)
         event.target.shadowRoot ? event.target.shadowRoot.appendChild($host()) : event.target.appendChild($host());
 
-      toastMessage = event.detail.message;
-      toastType = event.detail.type ?? toastType;
-      toastDuration = event.detail.duration ?? toastDuration;
+      notifierMessage = event.detail.message;
+      notifierType = event.detail.type ?? notifierType;
+      notifierDuration = event.detail.duration ?? notifierDuration;
 
-      if (toastDuration) {
+      if (notifierDuration > 0) {
         setTimeout(() => {
-          resetTaost();
-        }, toastDuration);
+          resetNotifier();
+        }, notifierDuration);
       } else {
         closeable = "closeable";
       }
     };
-
-    document.addEventListener("showToast", handleToastUpdate as EventListener);
+    //
+    document.addEventListener("pc-toast-emit", handleNotifierUpdate as EventListener);
 
     // utile ?
     return () => {
-      document.removeEventListener("showToast", handleToastUpdate as EventListener);
+      document.removeEventListener("pc-toast-emit", handleNotifierUpdate as EventListener);
     };
   });
 </script>
 
-{#if toastMessage}
+{#if notifierMessage}
   <div
-    class="toast"
+    class="notifier"
     class:embeded
-    class:error={toastType === "error"}
+    class:error={notifierType === "error"}
     in:scale
     out:fade={{ duration: 500 }}
     aria-live="polite"
   >
-    {toastMessage}
+    {notifierMessage}
 
-    <button onclick={resetTaost} class:closeable>x</button>
+    <button onclick={resetNotifier} class:closeable>x</button>
   </div>
 {/if}
 
 <style>
-  .toast {
+  .notifier {
     position: fixed;
-    top: 3rem;
+    top: var(--pc-header-spacing, 5rem);
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--pc-bg-color, #fff);
@@ -74,7 +75,7 @@
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     text-wrap: nowrap;
-    font-size: var(--pc-toast-fsize, 1.2rem);
+    font-size: var(--pc-notifier-fsize, 1.2rem);
     z-index: 10000;
   }
 
@@ -84,7 +85,7 @@
     bottom: calc(100% + 6px);
   }
 
-  .toast:has(button.closeable) {
+  .notifier:has(button.closeable) {
     padding: 1.5em;
   }
 
@@ -103,7 +104,7 @@
     cursor: pointer;
   }
 
-  .toast.error {
+  .notifier.error {
     color: #f44336;
   }
 </style>
