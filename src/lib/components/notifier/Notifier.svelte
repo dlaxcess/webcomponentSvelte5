@@ -74,7 +74,8 @@
     class:error={notifierType === "error"}
     in:scale
     out:fade={{ duration: 500 }}
-    aria-live="polite"
+    role={notifierType === "error" ? "alert" : "status"}
+    aria-live={notifierType === "error" ? "assertive" : "polite"}
     use:clickOutside={{ callback: resetNotifier, isOpening }}
   >
     {notifierMessage}
