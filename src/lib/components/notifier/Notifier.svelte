@@ -9,7 +9,7 @@
   let notifierDuration = $state(500);
   let closeable = $state("");
   let embeded = $state("");
-  let openedByClick = $state(false);
+  let isOpening = $state(false);
   let dialogRef = $state<HTMLDialogElement | null>(null);
 
   const resetNotifier = () => {
@@ -19,7 +19,7 @@
     notifierDuration = 500;
     closeable = "";
     embeded = "";
-    openedByClick = false;
+    isOpening = false;
     dialogRef?.close();
   };
 
@@ -33,7 +33,7 @@
     const handleNotifierUpdate = (event: CustomEvent) => {
       resetNotifier();
 
-      openedByClick = true;
+      isOpening = true;
 
       if (event.target !== document) embeded = "embeded";
 
@@ -75,7 +75,7 @@
     in:scale
     out:fade={{ duration: 500 }}
     aria-live="polite"
-    use:clickOutside={{ callback: resetNotifier, openedByClick }}
+    use:clickOutside={{ callback: resetNotifier, isOpening }}
   >
     {notifierMessage}
 

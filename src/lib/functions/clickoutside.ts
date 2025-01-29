@@ -6,15 +6,19 @@
  */
 interface ClickOutsideOptions {
   callback: () => void;
-  openedByClick?: boolean;
+  isOpening?: boolean;
 }
 
 export function clickOutside(node: HTMLElement, options: ClickOutsideOptions) {
-  let openedByClick = options.openedByClick;
-
+  // let isOpening = options.isOpening;
   const onClick = (event: MouseEvent) => {
-    if (openedByClick) {
-      openedByClick = false;
+    // if (isOpening) {
+    //   isOpening = false;
+    //   return;
+    // }
+
+    if (options.isOpening) {
+      options.isOpening = false;
       return;
     }
 
@@ -24,11 +28,23 @@ export function clickOutside(node: HTMLElement, options: ClickOutsideOptions) {
     }
   };
 
+  const onKeydown = (event: KeyboardEvent) => {
+    if (options.isOpening) {
+      options.isOpening = false;
+      return;
+    }
+  };
+
   document.addEventListener("click", onClick);
+  document.addEventListener("keydown", onKeydown);
 
   return {
     destroy() {
       document.removeEventListener("click", onClick);
+      document.removeEventListener("keydown", onKeydown);
+    },
+    update(newOptions: ClickOutsideOptions) {
+      options = newOptions;
     },
   };
 }
