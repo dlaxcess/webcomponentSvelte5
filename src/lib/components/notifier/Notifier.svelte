@@ -66,23 +66,22 @@
   });
 </script>
 
-{#if notifierMessage}
-  <dialog
-    bind:this={dialogRef}
-    class="notifier"
-    class:embeded
-    class:error={notifierType === "error"}
-    in:scale
-    out:fade={{ duration: 500 }}
-    role={notifierType === "error" ? "alert" : "status"}
-    aria-live={notifierType === "error" ? "assertive" : "polite"}
-    use:clickOutside={{ callback: resetNotifier, isOpening }}
-  >
-    {notifierMessage}
-
-    <button onclick={resetNotifier} class:closeable>x</button>
-  </dialog>
-{/if}
+<dialog
+  bind:this={dialogRef}
+  class="notifier"
+  class:embeded
+  class:error={notifierType === "error"}
+  role={notifierType === "error" ? "alert" : "status"}
+  aria-live={notifierType === "error" ? "assertive" : "polite"}
+  use:clickOutside={{ callback: resetNotifier, isOpening }}
+>
+  {#if notifierMessage}
+    <div in:scale out:fade={{ duration: 500 }}>
+      {notifierMessage}
+      <button onclick={resetNotifier} class:closeable>x</button>
+    </div>
+  {/if}
+</dialog>
 
 <style>
   .notifier {
