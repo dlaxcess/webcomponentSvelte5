@@ -11,6 +11,7 @@
   let embeded = $state("");
   let isOpening = $state(false);
   let dialogRef = $state<HTMLDialogElement | null>(null);
+  let previousActiveElement = $state<HTMLElement | null>(null);
 
   const resetNotifier = () => {
     document.body.prepend($host());
@@ -21,13 +22,11 @@
     embeded = "";
     isOpening = false;
     dialogRef?.close();
-  };
-
-  $effect(() => {
-    if (notifierMessage && dialogRef) {
-      dialogRef.showModal();
+    // Restaurer le focus à l'élément précédent
+    if (previousActiveElement instanceof HTMLElement) {
+      previousActiveElement.focus();
     }
-  });
+  };
 
   $effect(() => {
     const handleNotifierUpdate = (event: CustomEvent) => {
@@ -44,17 +43,18 @@
       notifierType = event.detail.type ?? notifierType;
       notifierDuration = event.detail.duration ?? notifierDuration;
 
-      // Ouvrir le dialog en mode modal
-      // if (dialogRef) {
-      //   dialogRef.showModal();
-      // }
-
       if (notifierDuration > 0) {
         setTimeout(() => {
           resetNotifier();
         }, notifierDuration);
       } else {
         closeable = "closeable";
+      }
+
+      // Ouvrir le dialogue après avoir déterminé si c'est closeable
+      if (dialogRef) {
+        previousActiveElement = document.activeElement as HTMLElement;
+        closeable ? dialogRef.showModal() : dialogRef.show();
       }
     };
 
