@@ -14,7 +14,13 @@
     "noEmit": true,
     "skipLibCheck": true,
     "strict": true,
-    "types": ["svelte"]
+    "types": ["svelte"],
+    "baseUrl": ".",
+    "paths": {
+      "$lib/*": ["src/lib/*"],
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/lib/components/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "src/lib/svelte.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]

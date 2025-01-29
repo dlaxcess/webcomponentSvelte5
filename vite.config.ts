@@ -39,6 +39,13 @@ const defaultConfig = defineConfig({
     },
   },
   plugins: [sveltePlugin],
+  resolve: {
+    alias: {
+      $lib: join(__dirname, 'src/lib'),
+      '@assets': join(__dirname, 'src/assets'),
+      '@components': join(__dirname, 'src/lib/components')
+    }
+  }
 });
 
 // Configuration pour les composants individuels
@@ -54,6 +61,13 @@ const componentsConfig = defineConfig({
     },
   },
   plugins: [sveltePlugin],
+  resolve: {
+    alias: {
+      $lib: join(__dirname, 'src/lib'),
+      '@assets': join(__dirname, 'src/assets'),
+      '@components': join(__dirname, 'src/lib/components')
+    }
+  }
 });
 
 // Exporter la configuration en fonction du mode

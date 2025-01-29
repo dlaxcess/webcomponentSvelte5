@@ -2,12 +2,14 @@
 
 <script lang="ts">
   import { fade, scale } from "svelte/transition";
+  import { clickOutside } from "$lib/functions/clickoutside";
 
   let notifierMessage = $state("");
   let notifierType = $state("success");
   let notifierDuration = $state(500);
   let closeable = $state("");
   let embeded = $state("");
+  let openedByClick = $state(false);
 
   const resetNotifier = () => {
     document.body.prepend($host());
@@ -16,11 +18,14 @@
     notifierDuration = 500;
     closeable = "";
     embeded = "";
+    openedByClick = false;
   };
 
   $effect(() => {
     const handleNotifierUpdate = (event: CustomEvent) => {
       resetNotifier();
+
+      openedByClick = true;
 
       if (event.target !== document) embeded = "embeded";
 
@@ -39,10 +44,9 @@
         closeable = "closeable";
       }
     };
-    //
+
     document.addEventListener("pc-toast-emit", handleNotifierUpdate as EventListener);
 
-    // utile ?
     return () => {
       document.removeEventListener("pc-toast-emit", handleNotifierUpdate as EventListener);
     };
@@ -57,6 +61,7 @@
     in:scale
     out:fade={{ duration: 500 }}
     aria-live="polite"
+    use:clickOutside={{ callback: resetNotifier, openedByClick }}
   >
     {notifierMessage}
 

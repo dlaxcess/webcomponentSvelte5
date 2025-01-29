@@ -34,13 +34,12 @@ class EventRouter {
           message,
           type,
           duration,
-          sourceElement
         },
         bubbles: true,
         composed: true,
       });
 
-      sourceElement.dispatchEvent(toastEvent);
+      type === "error" ? document.dispatchEvent(toastEvent) : sourceElement.dispatchEvent(toastEvent);
     };
 
     this.addEventHandler("actionButtonEmit", actionButtonHandler);
