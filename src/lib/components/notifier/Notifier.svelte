@@ -58,10 +58,10 @@
       }
     };
 
-    document.addEventListener("showToast", handleNotifierUpdate as EventListener);
+    document.addEventListener("notify", handleNotifierUpdate as EventListener);
 
     return () => {
-      document.removeEventListener("showToast", handleNotifierUpdate as EventListener);
+      document.removeEventListener("notify", handleNotifierUpdate as EventListener);
     };
   });
 </script>
