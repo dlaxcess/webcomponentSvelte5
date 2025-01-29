@@ -10,6 +10,7 @@
   let closeable = $state("");
   let embeded = $state("");
   let openedByClick = $state(false);
+  let dialogRef = $state<HTMLDialogElement | null>(null);
 
   const resetNotifier = () => {
     document.body.prepend($host());
@@ -19,7 +20,14 @@
     closeable = "";
     embeded = "";
     openedByClick = false;
+    dialogRef?.close();
   };
+
+  $effect(() => {
+    if (notifierMessage && dialogRef) {
+      dialogRef.showModal();
+    }
+  });
 
   $effect(() => {
     const handleNotifierUpdate = (event: CustomEvent) => {
@@ -36,6 +44,11 @@
       notifierType = event.detail.type ?? notifierType;
       notifierDuration = event.detail.duration ?? notifierDuration;
 
+      // Ouvrir le dialog en mode modal
+      // if (dialogRef) {
+      //   dialogRef.showModal();
+      // }
+
       if (notifierDuration > 0) {
         setTimeout(() => {
           resetNotifier();
@@ -45,16 +58,17 @@
       }
     };
 
-    document.addEventListener("pc-toast-emit", handleNotifierUpdate as EventListener);
+    document.addEventListener("showToast", handleNotifierUpdate as EventListener);
 
     return () => {
-      document.removeEventListener("pc-toast-emit", handleNotifierUpdate as EventListener);
+      document.removeEventListener("showToast", handleNotifierUpdate as EventListener);
     };
   });
 </script>
 
 {#if notifierMessage}
-  <div
+  <dialog
+    bind:this={dialogRef}
     class="notifier"
     class:embeded
     class:error={notifierType === "error"}
@@ -66,7 +80,7 @@
     {notifierMessage}
 
     <button onclick={resetNotifier} class:closeable>x</button>
-  </div>
+  </dialog>
 {/if}
 
 <style>

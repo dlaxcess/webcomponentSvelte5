@@ -29,7 +29,7 @@ class EventRouter {
       const duration = type === "error" ? 0 : 500;
       const sourceElement = event.target as HTMLElement;
 
-      const toastEvent = new CustomEvent("showToast", {
+      const toastEvent = new CustomEvent("notify", {
         detail: {
           message,
           type,
