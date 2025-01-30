@@ -1,11 +1,18 @@
 <svelte:options customElement="action-button" />
 
 <script lang="ts">
-  let { action, entry, title = "", text = "" } = $props();
-  let displayButton: boolean = $state(true);
+  import type { ActionType, ActionResultType, ActionButtonEventDetail, ShareData } from "./types";
 
-  const actionButtonEmit = (message: string, type: "success" | "error" = "success") => {
-    const event = new CustomEvent("actionButtonEmit", {
+  let { action, entry, title = "", text = "" } = $props<{
+    action: ActionType;
+    entry: string;
+    title?: string;
+    text?: string;
+  }>();
+  let displayButton = $state(true);
+
+  const actionButtonEmit = (message: string, type: ActionResultType = "success") => {
+    const event = new CustomEvent<ActionButtonEventDetail>("actionButtonEmit", {
       detail: {
         type,
         message,
@@ -34,7 +41,7 @@
       return;
     }
 
-    const shareData = {
+    const shareData: ShareData = {
       title,
       text,
       url,
@@ -57,8 +64,6 @@
   };
 
   $effect(() => {
-    // if (action === "share" && !navigator.share) displayButton = false;
-
     $host().style.setProperty("--button-display", !displayButton ? "none" : "block");
   });
 </script>

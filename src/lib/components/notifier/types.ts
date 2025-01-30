@@ -1,4 +1,4 @@
-export type NotifierType = 'success' | 'error' | 'info' | 'warning';
+export type NotifierType = "success" | "error" | "info" | "warning";
 
 export interface NotifierEventDetail {
   message: string;
