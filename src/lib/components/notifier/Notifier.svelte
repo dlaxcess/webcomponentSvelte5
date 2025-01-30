@@ -2,12 +2,13 @@
 
 <script lang="ts">
   import { clickOutside } from "$lib/functions/clickoutside";
+  import type { NotifierType, NotifierEventDetail } from "./types";
 
   let notifierMessage = $state("");
-  let notifierType = $state("success");
+  let notifierType = $state<NotifierType>("success");
   let notifierDuration = $state(400);
-  let closeable = $state("");
-  let embeded = $state("");
+  let closeable = $state(false);
+  let embeded = $state(false);
   let dialogRef = $state<HTMLDialogElement | null>(null);
   let previousActiveElement = $state<HTMLElement | null>(null);
   const transitionDuration = 500;
@@ -17,13 +18,13 @@
     notifierMessage = "";
     notifierType = "success";
     notifierDuration = 500;
-    closeable = "";
-    embeded = "";
+    closeable = false;
+    embeded = false;
   };
 
   const closeNotif = () => {
     if (dialogRef?.open) dialogRef.close();
-    if (embeded === "embeded" && previousActiveElement instanceof HTMLElement) previousActiveElement.focus();
+    if (embeded && previousActiveElement instanceof HTMLElement) previousActiveElement.focus();
 
     setTimeout(() => {
       resetNotifier();
@@ -33,12 +34,11 @@
   $effect(() => {
     $host().style.setProperty("--transition-duration", `${(transitionDuration / 1000).toString()}s`);
 
-    const handleNotifierUpdate = (event: CustomEvent) => {
+    const handleNotifierUpdate = (event: CustomEvent<NotifierEventDetail>) => {
       resetNotifier();
 
       if (event.target instanceof HTMLElement) {
-        embeded = "embeded";
-
+        embeded = true;
         event.target.shadowRoot ? event.target.shadowRoot.appendChild($host()) : event.target.appendChild($host());
       }
 
@@ -51,7 +51,7 @@
           closeNotif();
         }, notifierDuration);
       } else {
-        closeable = "closeable";
+        closeable = true;
       }
 
       if (dialogRef) {
@@ -59,7 +59,7 @@
         closeable ? dialogRef.showModal() : dialogRef.show();
       }
     };
-    //
+
     document.addEventListener("notify", handleNotifierUpdate as EventListener);
 
     return () => {
@@ -70,13 +70,13 @@
 
 <dialog
   bind:this={dialogRef}
-  class:embeded
+  class:embeded={embeded}
   class:error={notifierType === "error"}
   role={notifierType === "error" ? "alert" : "status"}
   aria-live={notifierType === "error" ? "assertive" : "polite"}
   use:clickOutside={closeNotif}
 >
-  <button type="button" onclick={closeNotif} class:closeable>
+  <button type="button" onclick={closeNotif} class:closeable={closeable}>
     {#if $$slots.closeButtonContent}
       <slot name="closeButtonContent" />
     {:else}

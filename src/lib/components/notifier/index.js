@@ -4,8 +4,7 @@ class NotifierElement extends HTMLElement {
   constructor() {
     super();
     new Notifier({
-      target: this,
-      props: {} 
+      target: this
     });
   }
 }
