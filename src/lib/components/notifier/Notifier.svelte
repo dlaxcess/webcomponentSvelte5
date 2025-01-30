@@ -76,7 +76,13 @@
   aria-live={notifierType === "error" ? "assertive" : "polite"}
   use:clickOutside={closeNotif}
 >
-  <button onclick={closeNotif} class:closeable>X</button>
+  <button type="button" onclick={closeNotif} class:closeable>
+    {#if $$slots.closeButtonContent}
+      <slot name="closeButtonContent" />
+    {:else}
+      X
+    {/if}
+  </button>
 
   {notifierMessage}
 </dialog>
