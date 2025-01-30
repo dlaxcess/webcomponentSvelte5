@@ -33,7 +33,9 @@
 
   $effect(() => {
     $host().style.setProperty("--transition-duration", `${(transitionDuration / 1000).toString()}s`);
+  });
 
+  $effect(() => {
     const handleNotifierUpdate = (event: CustomEvent<NotifierEventDetail>) => {
       resetNotifier();
 
@@ -70,13 +72,13 @@
 
 <dialog
   bind:this={dialogRef}
-  class:embeded={embeded}
+  class:embeded
   class:error={notifierType === "error"}
   role={notifierType === "error" ? "alert" : "status"}
   aria-live={notifierType === "error" ? "assertive" : "polite"}
   use:clickOutside={closeNotif}
 >
-  <button type="button" onclick={closeNotif} class:closeable={closeable}>
+  <button type="button" onclick={closeNotif} class:closeable>
     {#if $$slots.closeButtonContent}
       <slot name="closeButtonContent" />
     {:else}
@@ -84,7 +86,7 @@
     {/if}
   </button>
 
-  {notifierMessage}
+  <p>{notifierMessage}</p>
 </dialog>
 
 <style>
@@ -142,6 +144,10 @@
     z-index: var(--zindex-notification, 10000);
   }
 
+  p {
+    margin: 0;
+  }
+
   button {
     display: none;
   }
@@ -149,7 +155,7 @@
   button.closeable {
     display: block;
     float: right;
-    margin: 0 0 1em 1em;
+    margin-left: 1em;
     background-color: transparent;
     border: none;
     cursor: pointer;

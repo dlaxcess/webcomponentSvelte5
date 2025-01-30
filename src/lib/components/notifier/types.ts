@@ -9,3 +9,11 @@ export interface NotifierEventDetail {
 export interface NotifierSlots {
   closeButtonContent?: boolean;
 }
+
+export interface NotifierEvents {
+  notify: CustomEvent<NotifierEventDetail>;
+}
+
+export interface Notifier {
+  notify(message: string, type?: NotifierType, duration?: number): void;
+}

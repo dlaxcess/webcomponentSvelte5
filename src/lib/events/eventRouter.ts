@@ -1,5 +1,7 @@
+import type { NotifierEventDetail, NotifierType } from "$lib/components/notifier/types";
+
 interface ActionButtonEventDetail {
-  type: "success" | "error";
+  type: Extract<NotifierType, "success" | "error">;
   message: string;
 }
 
@@ -29,7 +31,7 @@ class EventRouter {
       const duration = type === "error" ? 0 : 500;
       const sourceElement = event.target as HTMLElement;
 
-      const notifyEvent = new CustomEvent("notify", {
+      const notifyEvent = new CustomEvent<NotifierEventDetail>("notify", {
         detail: {
           message,
           type,
@@ -45,7 +47,6 @@ class EventRouter {
     this.addEventHandler("actionButtonEmit", actionButtonHandler);
   }
 
-  // Public method to dynamically add handlers
   public addEventHandler(eventType: string, handler: EventHandler) {
     this.eventHandlers.set(eventType, handler);
     document.addEventListener(eventType, handler as EventListener);
