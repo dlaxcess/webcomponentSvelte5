@@ -1,4 +1,3 @@
-// Types pour les événements spécifiques
 interface ActionButtonEventDetail {
   type: "success" | "error";
   message: string;
@@ -12,24 +11,25 @@ class EventRouter {
 
   private constructor() {
     this.eventHandlers = new Map();
-    this.registerHandlers();
+    this.registerHandlersAndInit();
   }
 
   public static getInstance(): EventRouter {
     if (!EventRouter.instance) {
       EventRouter.instance = new EventRouter();
+      console.info("initialize EventRouter instance");
     }
     return EventRouter.instance;
   }
 
-  private registerHandlers() {
-    // Handler pour actionButtonEmit
+  private registerHandlersAndInit() {
+    // Callback for actionButtonEmit customEvent
     const actionButtonHandler = (event: CustomEvent<ActionButtonEventDetail>) => {
       const { type, message } = event.detail;
       const duration = type === "error" ? 0 : 500;
       const sourceElement = event.target as HTMLElement;
 
-      const toastEvent = new CustomEvent("notify", {
+      const notifyEvent = new CustomEvent("notify", {
         detail: {
           message,
           type,
@@ -39,19 +39,13 @@ class EventRouter {
         composed: true,
       });
 
-      type === "error" ? document.dispatchEvent(toastEvent) : sourceElement.dispatchEvent(toastEvent);
+      type === "error" ? document.dispatchEvent(notifyEvent) : sourceElement.dispatchEvent(notifyEvent);
     };
 
     this.addEventHandler("actionButtonEmit", actionButtonHandler);
-
-    // Exemple: Handler pour un autre type d'événement
-    // const otherHandler = (event: CustomEvent) => {
-    //   // Logique spécifique pour cet événement
-    // };
-    // this.addEventHandler("otherEvent", otherHandler);
   }
 
-  // Méthode publique pour ajouter dynamiquement des handlers
+  // Public method to dynamically add handlers
   public addEventHandler(eventType: string, handler: EventHandler) {
     this.eventHandlers.set(eventType, handler);
     document.addEventListener(eventType, handler as EventListener);

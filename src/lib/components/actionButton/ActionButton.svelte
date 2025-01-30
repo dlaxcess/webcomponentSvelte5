@@ -51,6 +51,7 @@
   const handleEvent = (event: MouseEvent | KeyboardEvent) => {
     if (event.type === "click" || ("key" in event && (event.key === "Enter" || event.key === " "))) {
       event.preventDefault();
+      event.stopPropagation();
       action === "share" ? navigatorShare(title, text, entry) : copyToClipboard(entry);
     }
   };
