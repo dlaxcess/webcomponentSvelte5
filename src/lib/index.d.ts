@@ -6,6 +6,13 @@ import type { CounterDisplayType } from "./components/counterDisplay/types";
 import type { NotifierType } from "./components/notifier/types";
 import type { SecurePinPadElement } from "./components/securePinPad/types";
 
+// Re-export all types for direct access
+export * from "./components/actionButton/types";
+export * from "./components/counter/types";
+export * from "./components/counterDisplay/types";
+export * from "./components/notifier/types";
+export * from "./components/securePinPad/types";
+
 declare module "webcomponentsvelte5" {
   declare global {
     namespace JSX {
