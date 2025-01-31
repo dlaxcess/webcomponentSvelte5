@@ -11,7 +11,6 @@
   let embeded = $state(false);
   let dialogRef = $state<HTMLDialogElement | null>(null);
   let previousActiveElement = $state<HTMLElement | null>(null);
-  const transitionDuration = 500;
 
   const resetNotifier = () => {
     document.body.prepend($host());
@@ -25,14 +24,20 @@
   const closeNotif = () => {
     if (dialogRef?.open) dialogRef.close();
     if (embeded && previousActiveElement instanceof HTMLElement) previousActiveElement.focus();
-
-    setTimeout(() => {
-      resetNotifier();
-    }, transitionDuration);
   };
 
   $effect(() => {
-    $host().style.setProperty("--transition-duration", `${(transitionDuration / 1000).toString()}s`);
+    const handleTransitionEnd = (event: TransitionEvent) => {
+      if (event.propertyName === "display" && !dialogRef?.open) {
+        resetNotifier();
+      }
+    };
+
+    dialogRef?.addEventListener("transitionend", handleTransitionEnd);
+
+    return () => {
+      dialogRef?.removeEventListener("transitionend", handleTransitionEnd);
+    };
   });
 
   $effect(() => {
@@ -97,10 +102,10 @@
   */
   dialog {
     transition:
-      display var(--transition-duration) allow-discrete,
-      opacity var(--transition-duration) allow-discrete,
-      overlay var(--transition-duration) allow-discrete,
-      scale var(--transition-duration);
+      display var(--notifier-transition-duration, 0.5s) allow-discrete,
+      opacity var(--notifier-transition-duration, 0.5s) allow-discrete,
+      overlay var(--notifier-transition-duration, 0.5s) allow-discrete,
+      scale var(--notifier-transition-duration, 0.5s);
 
     opacity: 0;
     margin: 0 auto;
