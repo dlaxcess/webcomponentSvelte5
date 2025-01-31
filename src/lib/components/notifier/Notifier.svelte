@@ -2,10 +2,10 @@
 
 <script lang="ts">
   import { clickOutside } from "$lib/functions/clickoutside";
-  import type { NotifierType, NotifierEventDetail } from "./types";
+  import type { NotifierStatus, NotifierEventDetail } from "./types";
 
   let notifierMessage = $state("");
-  let notifierType = $state<NotifierType>("success");
+  let notifierStatus = $state<NotifierStatus>("success");
   let notifierDuration = $state(400);
   let closeable = $state(false);
   let embeded = $state(false);
@@ -16,7 +16,7 @@
   const resetNotifier = () => {
     document.body.prepend($host());
     notifierMessage = "";
-    notifierType = "success";
+    notifierStatus = "success";
     notifierDuration = 500;
     closeable = false;
     embeded = false;
@@ -45,7 +45,7 @@
       }
 
       notifierMessage = event.detail.message;
-      notifierType = event.detail.type ?? notifierType;
+      notifierStatus = event.detail.type ?? notifierStatus;
       notifierDuration = event.detail.duration ?? notifierDuration;
 
       if (notifierDuration > 0) {
@@ -73,9 +73,9 @@
 <dialog
   bind:this={dialogRef}
   class:embeded
-  class:error={notifierType === "error"}
-  role={notifierType === "error" ? "alert" : "status"}
-  aria-live={notifierType === "error" ? "assertive" : "polite"}
+  class:error={notifierStatus === "error"}
+  role={notifierStatus === "error" ? "alert" : "status"}
+  aria-live={notifierStatus === "error" ? "assertive" : "polite"}
   use:clickOutside={closeNotif}
 >
   <button type="button" onclick={closeNotif} class:closeable>

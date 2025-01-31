@@ -1,5 +1,5 @@
-export type ActionType = 'copy' | 'share';
-export type ActionResultType = 'success' | 'error';
+export type ActionType = "copy" | "share";
+export type ActionResultType = "success" | "error";
 
 export interface ActionButtonProps {
   action: ActionType;
@@ -26,3 +26,5 @@ export interface ShareData {
   text?: string;
   url: string;
 }
+
+export type ActionButtonType = ActionButtonProps & ActionButtonEvents & ActionButtonSlots;

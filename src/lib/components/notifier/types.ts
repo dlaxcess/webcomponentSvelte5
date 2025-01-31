@@ -1,8 +1,8 @@
-export type NotifierType = "success" | "error" | "info" | "warning";
+export type NotifierStatus = "success" | "error" | "info" | "warning";
 
 export interface NotifierEventDetail {
   message: string;
-  type?: NotifierType;
+  type?: NotifierStatus;
   duration?: number;
 }
 
@@ -14,6 +14,14 @@ export interface NotifierEvents {
   notify: CustomEvent<NotifierEventDetail>;
 }
 
-export interface Notifier {
-  notify(message: string, type?: NotifierType, duration?: number): void;
+export interface NotifierProps {
+  message?: string;
+  type?: NotifierStatus;
+  duration?: number;
 }
+
+export interface Notifier {
+  notify(message: string, type?: NotifierStatus, duration?: number): void;
+}
+
+export type NotifierType = NotifierProps & NotifierEvents & NotifierSlots;
