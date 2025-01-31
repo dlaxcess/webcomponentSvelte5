@@ -1,12 +1,13 @@
-import type { NotifierEventDetail, NotifierType } from "$lib/components/notifier/types";
+import type { NotifierEventDetail } from "$lib/components/notifier/types";
+import type { ActionButtonEventDetail } from "$lib/components/actionButton/types";
 
-interface ActionButtonEventDetail {
-  type: Extract<NotifierType, "success" | "error">;
-  message: string;
-}
-
+/** Type definition for event handler functions */
 type EventHandler = (event: CustomEvent) => void;
 
+/**
+ * Singleton class that manages custom event routing in the application
+ * Handles the registration and routing of events between components
+ */
 class EventRouter {
   private static instance: EventRouter;
   private eventHandlers: Map<string, EventHandler>;
@@ -16,6 +17,11 @@ class EventRouter {
     this.registerHandlersAndInit();
   }
 
+  /**
+   * Gets the singleton instance of EventRouter
+   * Creates a new instance if one doesn't exist
+   * @returns The EventRouter instance
+   */
   public static getInstance(): EventRouter {
     if (!EventRouter.instance) {
       EventRouter.instance = new EventRouter();
@@ -24,6 +30,11 @@ class EventRouter {
     return EventRouter.instance;
   }
 
+  /**
+   * Registers all event handlers during initialization
+   * Currently handles:
+   * - actionButtonEmit: Routes action button events to the appropriate notifier
+   */
   private registerHandlersAndInit() {
     // Callback for actionButtonEmit customEvent
     const actionButtonHandler = (event: CustomEvent<ActionButtonEventDetail>) => {
@@ -41,15 +52,34 @@ class EventRouter {
         composed: true,
       });
 
+      // For error notifications, dispatch to document to show globally
+      // For success notifications, dispatch to source element for local display
       type === "error" ? document.dispatchEvent(notifyEvent) : sourceElement.dispatchEvent(notifyEvent);
     };
 
     this.addEventHandler("actionButtonEmit", actionButtonHandler);
   }
 
+  /**
+   * Adds a new event handler to the router
+   * @param eventType The type of event to handle
+   * @param handler The function to handle the event
+   */
   public addEventHandler(eventType: string, handler: EventHandler) {
     this.eventHandlers.set(eventType, handler);
     document.addEventListener(eventType, handler as EventListener);
+  }
+
+  /**
+   * Removes an event handler from the router
+   * @param eventType The type of event whose handler should be removed
+   */
+  public removeEventHandler(eventType: string) {
+    const handler = this.eventHandlers.get(eventType);
+    if (handler) {
+      document.removeEventListener(eventType, handler as EventListener);
+      this.eventHandlers.delete(eventType);
+    }
   }
 }
 
