@@ -14,26 +14,24 @@
   "license": "MIT",
   "main": "./dist/webComponentSvelte5.umd.js",
   "module": "./dist/webComponentSvelte5.es.js",
-  "types": "./src/lib/index.d.ts",
+  "types": "./dist/types/lib/index.d.ts",
   "files": [
-    "dist",
-    "src/lib/**/*.d.ts",
-    "src/lib/**/*.ts"
+    "dist"
   ],
   "exports": {
     ".": {
-      "types": "./src/lib/index.d.ts",
+      "types": "./dist/types/lib/index.d.ts",
       "import": "./dist/webComponentSvelte5.es.js",
       "require": "./dist/webComponentSvelte5.umd.js"
     },
     "./components/*": {
-      "types": "./src/lib/components/*/types.ts",
+      "types": "./dist/types/lib/components/*/types.d.ts",
       "import": "./dist/components/*.js"
     }
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build --mode components",
+    "build": "vite build && vite build --mode components && tsc -p tsconfig.build.json",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
   },
