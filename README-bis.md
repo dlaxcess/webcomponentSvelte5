@@ -22,18 +22,23 @@ npm install webcomponentsvelte5
 The library includes the following components:
 
 ### [Action Button](src/lib/components/actionButton/README.md)
+
 A versatile button component that handles clipboard operations and web sharing functionality.
 
 ### [Notifier](src/lib/components/notifier/README.md)
+
 A customizable notification system for displaying success and error messages.
 
 ### Counter
+
 A simple counter component with increment and decrement functionality.
 
 ### Counter Display
+
 A component for displaying counter values with customizable formatting.
 
 ### Secure Pin Pad
+
 A secure input component for PIN/password entry.
 
 ## Usage
@@ -44,7 +49,7 @@ You can either import all components at once using the complete bundle:
 
 ```html
 <script type="module">
-  import 'webcomponentsvelte5';
+  import "webcomponentsvelte5";
 </script>
 ```
 
@@ -52,8 +57,8 @@ Or import components individually as needed:
 
 ```html
 <script type="module">
-  import 'webcomponentsvelte5/components/actionButton';
-  import 'webcomponentsvelte5/components/notifier';
+  import "webcomponentsvelte5/components/actionButton";
+  import "webcomponentsvelte5/components/notifier";
   // Import other components as needed
 </script>
 ```
@@ -63,7 +68,7 @@ Or import components individually as needed:
 You can import the complete bundle in Node.js environments:
 
 ```javascript
-require('webcomponentsvelte5');
+require("webcomponentsvelte5");
 ```
 
 ### Usage in HTML
@@ -77,6 +82,99 @@ require('webcomponentsvelte5');
 <notifier-component></notifier-component>
 ```
 
+## How to Add a New Web Component
+
+1.  **Structure Creation**
+
+    - Create a new folder in `src/lib/components` with the `componentName`
+    - Create the following files in this folder:
+      - `ComponentName.svelte`: The Svelte component
+      - `index.js`: The web component export file
+      - `types.d.ts`: TypeScript definitions
+
+2.  **Implementation**
+
+    - In `ComponentName.svelte`:
+
+      ```svelte
+      <svelte:options customElement="component-name" />
+      <script lang="ts">
+        // Define your props and component logic
+      </script>
+
+      <!-- Component template -->
+      ```
+
+    - In `index.js`:
+
+      ```javascript
+      import ComponentName from "./ComponentName.svelte";
+      /** @typedef {import('svelte').SvelteComponent} SvelteComponent */
+
+      class ComponentNameElement extends HTMLElement {
+      /** @type {SvelteComponent|undefined} */
+        _element;
+
+        constructor() {
+          super();
+        }
+        connectedCallback() {
+          this._element = new ComponentName({
+            target: this
+        });
+
+        disconnectedCallback() {
+          this._element?.destroy();
+        }
+      }
+      if (!customElements.get("component-name")) {
+      customElements.define("component-name", ComponentNameElement);
+      }
+      export default ComponentName;
+      ```
+
+    - In `types.d.ts`:
+
+    ```typescript
+    // Define types for component props and events
+    ```
+
+3.  **Library Integration**
+
+    - Add the import in `src/lib/index.js`:
+      ```javascript
+      export { default as ComponentName } "./components/component-name/index.js";
+      ```
+    - Add types in `src/lib/index.d.ts`:
+
+      ```typescript
+      import type { ComponentNameType } from "./components/component-name/types";
+
+      export * from "./components/component-name/types";
+
+      declare module "webcomponentsvelte5" {
+        declare global {
+          namespace JSX {
+            interface IntrinsicElements {
+              [...]
+              "component-name": ComponentNameType;
+            }
+          }
+        }
+      }
+
+      declare module "webcomponentsvelte5/components/componentName" {
+        export default function (): void;
+        export * from "./components/componentName/types";
+      }
+      ```
+
+4.  **Testing and Documentation**
+
+    - Add unit tests if needed
+    - Document component props and events
+    - Update documentation with usage examples
+
 ## Documentation
 
 Each component has its own detailed documentation. Click the links in the "Available Components" section above to learn more about specific components.
@@ -84,6 +182,7 @@ Each component has its own detailed documentation. Click the links in the "Avail
 ## Browser Support
 
 This library supports all modern browsers that implement the Web Components specifications:
+
 - Chrome/Chromium
 - Firefox
 - Safari
