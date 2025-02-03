@@ -30,9 +30,7 @@
     }
   },
   "scripts": {
-    "dev": "vite",
     "build": "vite build && vite build --mode components && tsc -p tsconfig.build.json",
-    "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",

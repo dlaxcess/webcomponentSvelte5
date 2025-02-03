@@ -3,7 +3,12 @@
 <script lang="ts">
   import type { ActionType, ActionResultType, ActionButtonEventDetail, ShareData } from "./types";
 
-  let { action, entry, title = "", text = "" } = $props<{
+  let {
+    action,
+    entry,
+    title = "",
+    text = "",
+  } = $props<{
     action: ActionType;
     entry: string;
     title?: string;
@@ -64,7 +69,7 @@
   };
 
   $effect(() => {
-    $host().style.setProperty("--button-display", !displayButton ? "none" : "block");
+    $host().style.setProperty("--action-button-display", !displayButton ? "none" : "block");
   });
 </script>
 
@@ -76,7 +81,7 @@
 
 <style>
   :host {
-    display: var(--button-display, block);
+    display: var(--action-button-display, block);
     width: fit-content;
     position: relative;
   }
