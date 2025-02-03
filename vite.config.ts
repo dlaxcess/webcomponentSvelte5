@@ -8,9 +8,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Configuration commune pour les plugins Svelte
-const sveltePlugin = svelte({
-  compilerOptions: { customElement: true },
-});
+const sveltePlugin = svelte();
 
 // Fonction pour générer dynamiquement les inputs des composants
 function getComponentInputs(): Record<string, string> {
