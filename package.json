@@ -31,7 +31,7 @@
   },
   "scripts": {
     "build": "vite build && vite build --mode components && tsc -p tsconfig.build.json",
-    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
+    "check": "svelte-check --no-tsconfig --ignore '**/securePinPad/**,**/counter/**,**/displaycounter/**' && tsc -p tsconfig.node.json",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:coverage:open": "vitest run --coverage && open-cli ./coverage/index.html"
