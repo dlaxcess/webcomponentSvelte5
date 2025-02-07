@@ -9,11 +9,12 @@ class NotifierElement extends HTMLElement {
 
   constructor() {
     super();
+    this.shadowRoot = this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
     this._element = new Notifier({
-      target: this
+      target: this.shadowRoot
     });
   }
 

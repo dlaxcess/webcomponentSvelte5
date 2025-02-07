@@ -14,14 +14,12 @@
     title?: string;
     text?: string;
   }>();
+
   let displayButton = $state(true);
 
   const actionButtonEmit = (message: string, type: ActionResultType = "success") => {
     const event = new CustomEvent<ActionButtonEventDetail>("actionButtonEmit", {
-      detail: {
-        type,
-        message,
-      },
+      detail: { message, type },
       bubbles: true,
       composed: true,
     });
@@ -60,7 +58,7 @@
     }
   };
 
-  const handleEvent = (event: MouseEvent | KeyboardEvent) => {
+  const handleEvent = (event: Event | KeyboardEvent) => {
     if (event.type === "click" || ("key" in event && (event.key === "Enter" || event.key === " "))) {
       event.preventDefault();
       event.stopPropagation();
@@ -69,6 +67,8 @@
   };
 
   $effect(() => {
+    if (action === "share" && !navigator.share) displayButton = false;
+
     $host().style.setProperty("--action-button-display", !displayButton ? "none" : "block");
   });
 </script>

@@ -2,6 +2,6 @@
   import "../index";
 </script>
 
-<pc-notifier>
+<notifier-component>
   <button slot="closeButtonContent" data-testid="notirier-close-button"> X </button>
-</pc-notifier>
+</notifier-component>

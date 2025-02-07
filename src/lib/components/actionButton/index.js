@@ -9,11 +9,12 @@ class ActionButtonElement extends HTMLElement {
 
     constructor() {
         super();
+        this.shadowRoot = this.attachShadow({ mode: 'open' });
     }
 
     connectedCallback() {
         this._element = new ActionButton({
-            target: this,
+            target: this.shadowRoot
         });
     }
 
