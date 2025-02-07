@@ -1,7 +1,7 @@
-import { tick } from "svelte";
+import { flushSync, tick } from "svelte";
 import { render, screen, getByRole } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
-import { expect, test, vi, describe, beforeEach, beforeAll } from "vitest";
+import { expect, test, vi, describe, beforeEach } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { getByShadowRole } from "shadow-dom-testing-library";
 
@@ -12,35 +12,6 @@ describe("Notifier Component", () => {
   let container: HTMLElement;
   let dialog: HTMLDialogElement;
 
-  beforeAll(() => {
-    // Mock native dialog behavior
-    HTMLDialogElement.prototype.showModal = vi.fn(function mock(this: HTMLDialogElement) {
-      // Add Escape key event handler to mock closing the dialog
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key === "Escape" && this.open) {
-          this.close();
-        }
-      };
-      document.addEventListener("keydown", handleKeyDown);
-      this.addEventListener(
-        "close",
-        () => {
-          document.removeEventListener("keydown", handleKeyDown);
-        },
-        { once: true }
-      );
-      this.open = true;
-    });
-
-    HTMLDialogElement.prototype.show = vi.fn(function mock(this: HTMLDialogElement) {
-      this.open = true;
-    });
-
-    HTMLDialogElement.prototype.close = vi.fn(function mock(this: HTMLDialogElement) {
-      this.open = false;
-    });
-  });
-
   beforeEach(async () => {
     const renderResult = render(notifier);
     container = renderResult.container;
@@ -49,7 +20,7 @@ describe("Notifier Component", () => {
   });
 
   const dispatchGlobalNotifyEvent = async (detail: NotifierEventDetail) => {
-    const event = new CustomEvent("notify", { detail });
+    const event = new CustomEvent("notify", { detail, bubbles: true, composed: true });
     document.dispatchEvent(event);
   };
 
@@ -60,7 +31,7 @@ describe("Notifier Component", () => {
     expect(dialog?.open).toBe(false);
   });
 
-  test("should show notification with success status by default", async () => {
+  test("should show notification with success status by default with correct ARIA attributes", async () => {
     await dispatchGlobalNotifyEvent({
       message: "Test message",
       duration: 1000,
@@ -69,6 +40,8 @@ describe("Notifier Component", () => {
     expect(dialog?.open).toBe(true);
     expect(dialog?.textContent).toContain("Test message");
     expect(dialog?.classList.contains("error")).toBe(false);
+    expect(dialog?.getAttribute("role")).toBe("status");
+    expect(dialog?.getAttribute("aria-live")).toBe("polite");
   });
 
   test("should show notification with error status and correct ARIA attributes", async () => {
@@ -146,6 +119,7 @@ describe("Notifier Component", () => {
     // Should close on Escape
     await user.keyboard("{Escape}");
     await tick();
+
     expect(dialog?.open).toBe(false);
 
     // Show again
@@ -179,7 +153,7 @@ describe("Notifier Component", () => {
     const host = screen.getByTestId("notifier");
 
     // Create a test element
-    const targetElement = document.createElement("div");
+    const targetElement = document.createElement("button");
     document.body.appendChild(targetElement);
 
     const event = new CustomEvent("notify", {
@@ -206,5 +180,66 @@ describe("Notifier Component", () => {
     document.body.removeChild(targetElement);
 
     vi.useRealTimers();
+  });
+
+  test("should focus returns to the opener button", async () => {
+    const button = document.createElement("button");
+    button.textContent = "Target Button";
+    document.body.appendChild(button);
+    button.focus();
+
+    // Dispatch notify event from the button => .show() Method
+    const event = new CustomEvent("notify", {
+      detail: {
+        message: "show method notification",
+        duration: 0,
+      },
+      bubbles: true,
+      composed: true,
+    });
+    button.dispatchEvent(event);
+    await tick();
+
+    const host = screen.getByTestId("notifier");
+
+    // Close dialog
+    const closeButton = getByRole(host, "button") as HTMLButtonElement;
+    const user = userEvent.setup();
+    await user.click(closeButton);
+    await tick();
+
+    // Check if focus returns to the button
+    expect(document.activeElement).toBe(button);
+
+    // Cleanup
+    document.body.removeChild(button);
+  });
+
+  test("should focus returns to the opener button showModal", async () => {
+    const button = document.createElement("button");
+    button.textContent = "Target Button";
+    document.body.appendChild(button);
+    button.focus();
+
+    // Dispatch notify event from document => .showModal() Method
+    await dispatchGlobalNotifyEvent({
+      message: "showModal method notification",
+      duration: 0,
+    });
+    await tick();
+
+    const host = screen.getByTestId("notifier");
+
+    // Close dialog
+    const closeButton = getByRole(host, "button") as HTMLButtonElement;
+    const user = userEvent.setup();
+    await user.click(closeButton);
+    await tick();
+
+    // Check if focus returns to the button
+    expect(document.activeElement).toBe(button);
+
+    // Cleanup
+    document.body.removeChild(button);
   });
 });
