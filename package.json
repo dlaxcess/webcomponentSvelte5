@@ -34,7 +34,8 @@
     "check": "svelte-check --no-tsconfig --ignore '**/securePinPad/**,**/counter/**,**/displaycounter/**' && tsc -p tsconfig.node.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:open": "vitest run --coverage && open-cli coverage/index.html"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.2",
@@ -45,6 +46,7 @@
     "@types/node": "^22.10.10",
     "@vitest/coverage-v8": "^3.0.4",
     "jsdom": "^26.0.0",
+    "open-cli": "^8.0.0",
     "shadow-dom-testing-library": "^1.11.3",
     "svelte": "^5.14.3",
     "svelte-check": "^4.1.1",
