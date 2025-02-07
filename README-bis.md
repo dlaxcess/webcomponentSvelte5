@@ -28,8 +28,9 @@ pnpm run watch-bundle # watch for bundle changes
 
 pnpm run check # launch Svelte checks
 
-pnpm test    #launch unit tests
-pnpm test:ui # lauch tests with UI
+pnpm test                            #launch unit tests
+pnpm test:ui                         # lauch tests with UI
+pnmp test:coverage:open              # see test coverage in UI
 
 ```
 
@@ -122,20 +123,20 @@ require("webcomponentSvelte5");
           _element;
 
           constructor() {
-            super();
-            this.shadowRoot = this.attachShadow({ mode: 'open' });
+              super();
+              this.shadowRoot = this.attachShadow({ mode: "open" });
           }
           connectedCallback() {
-            this._element = new ComponentName({
-                target: this.shadowRoot
+              this._element = new ComponentName({
+                  target: this.shadowRoot
           });
 
           disconnectedCallback() {
-            this._element?.destroy();
+              this._element?.destroy();
           }
       }
       if (!customElements.get("component-name")) {
-        customElements.define("component-name", ComponentNameElement);
+          customElements.define("component-name", ComponentNameElement);
       }
       export default ComponentName;
       ```
