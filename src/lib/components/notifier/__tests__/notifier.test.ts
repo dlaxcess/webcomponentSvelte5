@@ -1,4 +1,4 @@
-import { flushSync, tick } from "svelte";
+import { tick } from "svelte";
 import { render, screen, getByRole } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { expect, test, vi, describe, beforeEach } from "vitest";
@@ -183,6 +183,8 @@ describe("Notifier Component", () => {
   });
 
   test("should focus returns to the opener button", async () => {
+    const host = screen.getByTestId("notifier");
+
     const button = document.createElement("button");
     button.textContent = "Target Button";
     document.body.appendChild(button);
@@ -200,8 +202,6 @@ describe("Notifier Component", () => {
     button.dispatchEvent(event);
     await tick();
 
-    const host = screen.getByTestId("notifier");
-
     // Close dialog
     const closeButton = getByRole(host, "button") as HTMLButtonElement;
     const user = userEvent.setup();
@@ -211,16 +211,6 @@ describe("Notifier Component", () => {
     // Check if focus returns to the button
     expect(document.activeElement).toBe(button);
 
-    // Cleanup
-    document.body.removeChild(button);
-  });
-
-  test("should focus returns to the opener button showModal", async () => {
-    const button = document.createElement("button");
-    button.textContent = "Target Button";
-    document.body.appendChild(button);
-    button.focus();
-
     // Dispatch notify event from document => .showModal() Method
     await dispatchGlobalNotifyEvent({
       message: "showModal method notification",
@@ -228,11 +218,7 @@ describe("Notifier Component", () => {
     });
     await tick();
 
-    const host = screen.getByTestId("notifier");
-
     // Close dialog
-    const closeButton = getByRole(host, "button") as HTMLButtonElement;
-    const user = userEvent.setup();
     await user.click(closeButton);
     await tick();
 
