@@ -13,11 +13,26 @@ describe("Notifier Component", () => {
   let dialog: HTMLDialogElement;
 
   beforeAll(() => {
-    HTMLDialogElement.prototype.show = vi.fn(function mock(this: HTMLDialogElement) {
+    // Mock native dialog behavior
+    HTMLDialogElement.prototype.showModal = vi.fn(function mock(this: HTMLDialogElement) {
+      // Add Escape key event handler to mock closing the dialog
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === "Escape" && this.open) {
+          this.close();
+        }
+      };
+      document.addEventListener("keydown", handleKeyDown);
+      this.addEventListener(
+        "close",
+        () => {
+          document.removeEventListener("keydown", handleKeyDown);
+        },
+        { once: true }
+      );
       this.open = true;
     });
 
-    HTMLDialogElement.prototype.showModal = vi.fn(function mock(this: HTMLDialogElement) {
+    HTMLDialogElement.prototype.show = vi.fn(function mock(this: HTMLDialogElement) {
       this.open = true;
     });
 
@@ -113,16 +128,15 @@ describe("Notifier Component", () => {
     const user = userEvent.setup();
 
     // Should close on Escape
-    // await user.keyboard("{Esc}");
-    // await tick();
+    await user.keyboard("{Escape}");
+    await tick();
+    expect(dialog?.open).toBe(false);
 
-    // expect(dialog?.open).toBe(false);
-
-    // // Show again
-    // await dispatchGlobalNotifyEvent({
-    //   message: "Test message",
-    //   duration: 0,
-    // });
+    // Show again
+    await dispatchGlobalNotifyEvent({
+      message: "Test message",
+      duration: 0,
+    });
 
     // Should close on Enter when button is focused
     closeButton.focus();
