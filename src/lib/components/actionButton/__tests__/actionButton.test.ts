@@ -192,5 +192,44 @@ describe("ActionButton Component", () => {
         text: "Test text",
       });
     });
+
+    test("should trigger share when pressing Enter key", async () => {
+      navigatorShareDefine(true);
+      const navigatorShareMock = vi.spyOn(navigator, "share").mockResolvedValue();
+
+      shareButton = await setupShareDefinedComp();
+
+      const user = userEvent.setup();
+      shareButton.focus();
+      await user.keyboard("{Enter}");
+
+      expect(navigatorShareMock).toHaveBeenCalledTimes(1);
+    });
+
+    test("should trigger share when pressing Space key", async () => {
+      navigatorShareDefine(true);
+      const navigatorShareMock = vi.spyOn(navigator, "share").mockResolvedValue();
+
+      shareButton = await setupShareDefinedComp();
+
+      const user = userEvent.setup();
+      shareButton.focus();
+      await user.keyboard(" ");
+
+      expect(navigatorShareMock).toHaveBeenCalledTimes(1);
+    });
+
+    test("should not trigger share when pressing other keys", async () => {
+      navigatorShareDefine(true);
+      const navigatorShareMock = vi.spyOn(navigator, "share").mockResolvedValue();
+
+      shareButton = await setupShareDefinedComp();
+
+      const user = userEvent.setup();
+      shareButton.focus();
+      await user.keyboard("A");
+
+      expect(navigatorShareMock).not.toHaveBeenCalled();
+    });
   });
 });
