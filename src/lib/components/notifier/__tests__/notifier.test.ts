@@ -118,7 +118,23 @@ describe("Notifier Component", () => {
     expect(dialog?.open).toBe(false);
   });
 
-  test("should handle keyboard interactions correctly", async () => {
+  test("should close when clicking outside the dialog", async () => {
+    await dispatchGlobalNotifyEvent({
+      message: "Test message",
+      duration: 0,
+    });
+
+    expect(dialog?.open).toBe(true);
+
+    // Simulate click outside
+    const user = userEvent.setup();
+    await user.click(document.body);
+    await tick();
+
+    expect(dialog?.open).toBe(false);
+  });
+
+  test("should handle close with keyboard interactions correctly", async () => {
     await dispatchGlobalNotifyEvent({
       message: "Test message",
       duration: 0,
