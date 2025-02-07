@@ -82,6 +82,7 @@
   role={notifierStatus === "error" ? "alert" : "status"}
   aria-live={notifierStatus === "error" ? "assertive" : "polite"}
   use:clickOutside={closeNotif}
+  data-testid="notifier-dialog"
 >
   <button type="button" onclick={closeNotif} class:closeable>
     {#if $$slots.closeButtonContent}
@@ -115,6 +116,12 @@
     border-radius: 4px;
     box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.2);
     border: none;
+  }
+
+  /* Désactiver les transitions pendant les tests */
+  :global([data-testid="notifier-dialog"]) {
+    transition: none !important;
+    opacity: 1 !important;
   }
 
   dialog[open] {

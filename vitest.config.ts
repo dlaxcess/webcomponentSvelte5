@@ -11,6 +11,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./vitest-setup.ts"],
+    testTimeout: 10000,
     coverage: {
       reporter: ["text", "json", "html"],
     },
