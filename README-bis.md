@@ -1,6 +1,6 @@
-# WebComponentSvelte5 Library
+# WebcomponentSvelte5 Library
 
-A modern library of Web Components built with Svelte 5, offering reusable and framework-agnostic UI components that can be integrated into any web application.
+Library of Web Components built with Svelte 5, offering reusable and framework-agnostic UI components that can be integrated into any web application.
 
 ## Features
 
@@ -14,7 +14,23 @@ A modern library of Web Components built with Svelte 5, offering reusable and fr
 ## Installation
 
 ```bash
-npm install webcomponentsvelte5
+pnpm install webcomponentSvelte5 # Library not published for now (use pnpm workspace).
+```
+
+## Scripts
+
+```bash
+pnpm run build # build individuals components & bundle
+
+pnpm run watch # watch for individuals components changes
+
+pnpm run watch-bundle # watch for bundle changes
+
+pnpm run check # launch Svelte checks
+
+pnpm test    #launch unit tests
+pnpm test:ui # lauch tests with UI
+
 ```
 
 ## Available Components
@@ -23,63 +39,52 @@ The library includes the following components:
 
 ### [Action Button](src/lib/components/actionButton/README.md)
 
-A versatile button component that handles clipboard operations and web sharing functionality.
+A button wrapper component that handles clipboard copy and web sharing functionality.
 
 ### [Notifier](src/lib/components/notifier/README.md)
 
 A customizable notification system for displaying success and error messages.
 
-### Counter
+## Documentation
 
-A simple counter component with increment and decrement functionality.
-
-### Counter Display
-
-A component for displaying counter values with customizable formatting.
-
-### Secure Pin Pad
-
-A secure input component for PIN/password entry.
+Each component has its own detailed documentation. Click the links in the "Available Components" section above to learn more about specific components.
 
 ## Usage
 
 ### ES Modules
 
-You can either import all components at once using the complete bundle:
+You can either import and use components individually in your project:
 
 ```html
+<!-- HTML -->
 <script type="module">
-  import "webcomponentsvelte5";
+  import "webcomponentSvelte5/components/actionButton";
+  import "webcomponentSvelte5/components/notifier";
+  // Import other components as needed
 </script>
 ```
 
-Or import components individually as needed:
+```javascript
+// Javascript
+import "webcomponentSvelte5/components/actionButton";
+import "webcomponentSvelte5/components/notifier";
+// Import other components as needed
+```
+
+Or import all components at once using the complete bundle:
 
 ```html
 <script type="module">
-  import "webcomponentsvelte5/components/actionButton";
-  import "webcomponentsvelte5/components/notifier";
-  // Import other components as needed
+  import "webcomponentSvelte5";
 </script>
 ```
 
 ### CommonJS
 
-You can import the complete bundle in Node.js environments:
+(Only for bundle)
 
 ```javascript
-require("webcomponentsvelte5");
-```
-
-### Usage in HTML
-
-```html
-<!-- Use components in your HTML -->
-<action-button action="copy" entry="Text to copy">
-  <button slot="button">Copy</button>
-</action-button>
-
-<notifier-component></notifier-component>
+require("webcomponentSvelte5");
 ```
 
 ## How to Add a New Web Component
@@ -90,7 +95,8 @@ require("webcomponentsvelte5");
     - Create the following files in this folder:
       - `ComponentName.svelte`: The Svelte component
       - `index.js`: The web component export file
-      - `types.d.ts`: TypeScript definitions
+      - `types.ts`: TypeScript definitions
+      - `README.md`: Document component props and events
 
 2.  **Implementation**
 
@@ -99,7 +105,7 @@ require("webcomponentsvelte5");
       ```svelte
       <svelte:options customElement="component-name" />
       <script lang="ts">
-        // Define your props and component logic
+          // Define your props and component logic
       </script>
 
       <!-- Component template -->
@@ -113,31 +119,32 @@ require("webcomponentsvelte5");
 
       class ComponentNameElement extends HTMLElement {
       /** @type {SvelteComponent|undefined} */
-        _element;
+          _element;
 
-        constructor() {
-          super();
-        }
-        connectedCallback() {
-          this._element = new ComponentName({
-            target: this
-        });
+          constructor() {
+            super();
+            this.shadowRoot = this.attachShadow({ mode: 'open' });
+          }
+          connectedCallback() {
+            this._element = new ComponentName({
+                target: this.shadowRoot
+          });
 
-        disconnectedCallback() {
-          this._element?.destroy();
-        }
+          disconnectedCallback() {
+            this._element?.destroy();
+          }
       }
       if (!customElements.get("component-name")) {
-      customElements.define("component-name", ComponentNameElement);
+        customElements.define("component-name", ComponentNameElement);
       }
       export default ComponentName;
       ```
 
-    - In `types.d.ts`:
+    - In `types.ts`:
 
-    ```typescript
-    // Define types for component props and events
-    ```
+      ```typescript
+      // Define types for component props and events
+      ```
 
 3.  **Library Integration**
 
@@ -152,7 +159,7 @@ require("webcomponentsvelte5");
 
       export * from "./components/component-name/types";
 
-      declare module "webcomponentsvelte5" {
+      declare module "webcomponents" {
         declare global {
           namespace JSX {
             interface IntrinsicElements {
@@ -163,7 +170,7 @@ require("webcomponentsvelte5");
         }
       }
 
-      declare module "webcomponentsvelte5/components/componentName" {
+      declare module "webcomponents/components/componentName" {
         export default function (): void;
         export * from "./components/componentName/types";
       }
@@ -172,12 +179,11 @@ require("webcomponentsvelte5");
 4.  **Testing and Documentation**
 
     - Add unit tests if needed
-    - Document component props and events
-    - Update documentation with usage examples
+    - Update documentation with component props and events & usage examples
 
-## Documentation
+## Tests
 
-Each component has its own detailed documentation. Click the links in the "Available Components" section above to learn more about specific components.
+Tests use [shadow-dom-testing-library](https://github.com/KonnorRogers/shadow-dom-testing-library) to interact with shadow DOM.
 
 ## Browser Support
 
@@ -187,11 +193,3 @@ This library supports all modern browsers that implement the Web Components spec
 - Firefox
 - Safari
 - Edge
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit issues and pull requests.
-
-## License
-
-This project is licensed under the MIT License.

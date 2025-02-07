@@ -6,7 +6,7 @@ A custom web component to handle actions like copying to clipboard and sharing v
 
 ```html
 <script type="module">
-  import "webcomponentsvelte5/components/actionButton";
+  import "webcomponentSvelte5/components/actionButton";
 </script>
 ```
 
@@ -20,7 +20,7 @@ A custom web component to handle actions like copying to clipboard and sharing v
 
 <!-- Custom share button -->
 <action-button action="share" entry="https://example.com" title="Share title" text="Share description">
-  <div slot="button" class="custom-share-button">
+  <div slot="button" role="button" tabindex="0" class="custom-share-button">
     <img src="share-icon.svg" alt="Share" />
     <span>Share</span>
   </div>
@@ -35,22 +35,6 @@ A custom web component to handle actions like copying to clipboard and sharing v
 | entry  | string            | Content to copy or URL to share            | Yes      |
 | title  | string            | Title for sharing (only for 'share')       | No       |
 | text   | string            | Description for sharing (only for 'share') | No       |
-
-## Slots
-
-The component provides a slot to customize its appearance:
-
-- `button`: Allows complete customization of the action button
-
-```html
-<!-- Example with a custom button -->
-<action-button action="copy" entry="Text">
-  <div slot="button" class="custom-button">
-    <i class="icon-copy"></i>
-    <span>Copy to clipboard</span>
-  </div>
-</action-button>
-```
 
 ## Events
 
@@ -68,23 +52,40 @@ interface ActionButtonEventDetail {
 ```javascript
 document.addEventListener("actionButtonEmit", (event) => {
   const { type, message } = event.detail;
-  console.log(`Action ${type}: ${message}`);
+  console.log(`${type}: ${message}`);
 });
 ```
 
-## CSS Customization
+## Customization
+
+### Slots
+
+The component provides a slot to customize its appearance:
+
+- `button` (mandatory): Allows complete customization of the action button
+
+```html
+<!-- Example with a custom button -->
+<action-button action="copy" entry="Text">
+  <button slot="button" class="custom-button">
+    <i class="icon-copy"></i>
+  </button>
+</action-button>
+```
+
+### CSS
 
 The component can be customized via CSS:
 
 ```css
 action-button {
-  --action-button-display: block; /* Controls actionButton Webcomponent display */
+  --action-button-display: block; /* Controls actionButton webcomponent display */
 }
 ```
 
 ## Notes
 
-- The "share" action uses the Web Share API and will only work on browsers that support it
-- The "copy" action uses the Clipboard API and requires appropriate permissions
+- The "share" action uses the [Web Share API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Share_API) and will only work on browsers that support it
+- The "copy" action uses the [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard) and requires appropriate permissions
 - The component automatically handles errors and emits appropriate events
 - The `button` slot is mandatory for the component to be functional
