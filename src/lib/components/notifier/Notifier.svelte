@@ -6,9 +6,9 @@
 
   let notifierMessage = $state("");
   let notifierStatus = $state<NotifierStatus>("success");
-  let notifierDuration = $state(400);
+  let notifierDuration = $state(500);
   let closeable = $state(false);
-  let embeded = $state(false);
+  let embedded = $state(false);
   let dialogRef = $state<HTMLDialogElement | null>(null);
   let previousActiveElement = $state<HTMLElement | null>(null);
 
@@ -18,12 +18,12 @@
     notifierStatus = "success";
     notifierDuration = 500;
     closeable = false;
-    embeded = false;
+    embedded = false;
   };
 
   const closeNotif = () => {
     if (dialogRef?.open) dialogRef.close();
-    if (embeded && previousActiveElement instanceof HTMLElement) previousActiveElement.focus();
+    if (embedded && previousActiveElement instanceof HTMLElement) previousActiveElement.focus();
   };
 
   $effect(() => {
@@ -45,7 +45,7 @@
       resetNotifier();
 
       if (event.target instanceof HTMLElement) {
-        embeded = true;
+        embedded = true;
         event.target.shadowRoot ? event.target.shadowRoot.appendChild($host()) : event.target.appendChild($host());
       }
 
@@ -77,7 +77,7 @@
 
 <dialog
   bind:this={dialogRef}
-  class:embeded
+  class:embedded
   class:error={notifierStatus === "error"}
   role={notifierStatus === "error" ? "alert" : "status"}
   aria-live={notifierStatus === "error" ? "assertive" : "polite"}
@@ -90,8 +90,9 @@
       X
     {/if}
   </button>
-
-  <p>{notifierMessage}</p>
+  <p>
+    {notifierMessage}
+  </p>
 </dialog>
 
 <style>
@@ -135,7 +136,7 @@
     outline: var(--focus-outline, revert);
   }
 
-  .embeded {
+  .embedded {
     position: absolute;
     top: unset;
     bottom: calc(100% + 6px);
