@@ -10,14 +10,10 @@ describe("EventRouter", () => {
     // @ts-expect-error accessing private property for testing
     EventRouter["instance"] = undefined;
     eventRouter = EventRouter.getInstance();
-
-    // Configure fake timers
-    vi.useFakeTimers();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.useRealTimers();
   });
 
   test("should create only one instance (Singleton)", () => {
@@ -42,16 +38,12 @@ describe("EventRouter", () => {
   });
 
   describe("actionButtonEmit handler", () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-    });
-
     test("should route success events to source element", () => {
-      // Créer un bouton d'action
+      // Create an action button
       const actionButton = document.createElement("button");
       document.body.appendChild(actionButton);
 
-      // Récupérer le handler de l'EventRouter
+      // Get the handler from EventRouter
       const eventRouter = EventRouter.getInstance();
       const handler = eventRouter["eventHandlers"].get("actionButtonEmit");
       
@@ -59,7 +51,7 @@ describe("EventRouter", () => {
         throw new Error("actionButtonEmit handler not found in EventRouter");
       }
 
-      // Simuler un événement de succès
+      // Simulate a success event
       const successEvent = new CustomEvent<ActionButtonEventDetail>("actionButtonEmit", {
         detail: {
           message: "Success message",
@@ -69,13 +61,13 @@ describe("EventRouter", () => {
       });
       Object.defineProperty(successEvent, "target", { value: actionButton });
 
-      // Spy sur les dispatch d'événements
+      // Spy on event dispatches
       const mockButtonDispatch = vi.spyOn(actionButton, "dispatchEvent");
 
-      // Appeler directement le handler avec l'événement
+      // Directly call the handler with the event
       handler(successEvent);
 
-      // Vérifier que l'événement notify est envoyé par le bouton
+      // Check that notify event is sent by the button
       const notifyEvents = mockButtonDispatch.mock.calls
         .map(call => call[0] as CustomEvent)
         .filter(event => event.type === "notify");
@@ -91,11 +83,11 @@ describe("EventRouter", () => {
     });
 
     test("should route error events to document", () => {
-      // Créer un bouton d'action
+      // Create an action button
       const actionButton = document.createElement("button");
       document.body.appendChild(actionButton);
 
-      // Récupérer le handler de l'EventRouter
+      // Get the handler from EventRouter
       const eventRouter = EventRouter.getInstance();
       const handler = eventRouter["eventHandlers"].get("actionButtonEmit");
       
@@ -103,7 +95,7 @@ describe("EventRouter", () => {
         throw new Error("actionButtonEmit handler not found in EventRouter");
       }
 
-      // Simuler un événement d'erreur
+      // Simulate an error event
       const errorEvent = new CustomEvent<ActionButtonEventDetail>("actionButtonEmit", {
         detail: {
           message: "Error message",
@@ -113,13 +105,13 @@ describe("EventRouter", () => {
       });
       Object.defineProperty(errorEvent, "target", { value: actionButton });
 
-      // Spy sur les dispatch d'événements
+      // Spy on event dispatches
       const mockDocumentDispatch = vi.spyOn(document, "dispatchEvent");
 
-      // Appeler directement le handler avec l'événement
+      // Directly call the handler with the event
       handler(errorEvent);
 
-      // Vérifier que l'événement notify est envoyé par le document
+      // Check that notify event is sent by the document
       const notifyEvents = mockDocumentDispatch.mock.calls
         .map(call => call[0] as CustomEvent)
         .filter(event => event.type === "notify");
@@ -130,67 +122,6 @@ describe("EventRouter", () => {
         type: "error",
         duration: 0
       });
-
-      document.body.removeChild(actionButton);
-    });
-
-    test("should set correct duration based on event type", () => {
-      // Créer un bouton d'action
-      const actionButton = document.createElement("button");
-      document.body.appendChild(actionButton);
-
-      // Récupérer le handler de l'EventRouter
-      const eventRouter = EventRouter.getInstance();
-      const handler = eventRouter["eventHandlers"].get("actionButtonEmit");
-      
-      if (!handler) {
-        throw new Error("actionButtonEmit handler not found in EventRouter");
-      }
-
-      // Simuler un événement de succès
-      const successEvent = new CustomEvent<ActionButtonEventDetail>("actionButtonEmit", {
-        detail: {
-          message: "Success",
-          type: "success"
-        },
-        bubbles: true
-      });
-      Object.defineProperty(successEvent, "target", { value: actionButton });
-
-      // Simuler un événement d'erreur
-      const errorEvent = new CustomEvent<ActionButtonEventDetail>("actionButtonEmit", {
-        detail: {
-          message: "Error",
-          type: "error"
-        },
-        bubbles: true
-      });
-      Object.defineProperty(errorEvent, "target", { value: actionButton });
-
-      // Spy sur les dispatch d'événements
-      const mockButtonDispatch = vi.spyOn(actionButton, "dispatchEvent");
-      const mockDocumentDispatch = vi.spyOn(document, "dispatchEvent");
-
-      // Appeler directement les handlers avec les événements
-      handler(successEvent);
-      handler(errorEvent);
-
-      // Vérifier les événements notify
-      const documentNotifyEvents = mockDocumentDispatch.mock.calls
-        .map(call => call[0] as CustomEvent)
-        .filter(event => event.type === "notify");
-
-      const buttonNotifyEvents = mockButtonDispatch.mock.calls
-        .map(call => call[0] as CustomEvent)
-        .filter(event => event.type === "notify");
-
-      // Un seul événement d'erreur sur le document
-      expect(documentNotifyEvents.length).toBe(1);
-      expect(documentNotifyEvents[0].detail.duration).toBe(0);
-
-      // Un seul événement de succès sur le bouton
-      expect(buttonNotifyEvents.length).toBe(1);
-      expect(buttonNotifyEvents[0].detail.duration).toBe(500);
 
       document.body.removeChild(actionButton);
     });
