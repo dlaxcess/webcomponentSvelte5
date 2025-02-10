@@ -75,7 +75,7 @@ describe("EventRouter", () => {
       // Appeler directement le handler avec l'événement
       handler(successEvent);
 
-      // Vérifier que l'événement notify est envoyé au bouton
+      // Vérifier que l'événement notify est envoyé par le bouton
       const notifyEvents = mockButtonDispatch.mock.calls
         .map(call => call[0] as CustomEvent)
         .filter(event => event.type === "notify");
@@ -119,7 +119,7 @@ describe("EventRouter", () => {
       // Appeler directement le handler avec l'événement
       handler(errorEvent);
 
-      // Vérifier que l'événement notify est envoyé au document
+      // Vérifier que l'événement notify est envoyé par le document
       const notifyEvents = mockDocumentDispatch.mock.calls
         .map(call => call[0] as CustomEvent)
         .filter(event => event.type === "notify");
