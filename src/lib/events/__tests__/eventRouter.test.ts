@@ -46,18 +46,15 @@ describe("EventRouter", () => {
       // Get the handler from EventRouter
       const eventRouter = EventRouter.getInstance();
       const handler = eventRouter["eventHandlers"].get("actionButtonEmit");
+      expect(handler).toBeTruthy();
       
-      if (!handler) {
-        throw new Error("actionButtonEmit handler not found in EventRouter");
-      }
-
       // Simulate a success event
       const successEvent = new CustomEvent<ActionButtonEventDetail>("actionButtonEmit", {
         detail: {
           message: "Success message",
-          type: "success"
+          type: "success",
         },
-        bubbles: true
+        bubbles: true,
       });
       Object.defineProperty(successEvent, "target", { value: actionButton });
 
@@ -65,18 +62,18 @@ describe("EventRouter", () => {
       const mockButtonDispatch = vi.spyOn(actionButton, "dispatchEvent");
 
       // Directly call the handler with the event
-      handler(successEvent);
+      handler!(successEvent);
 
       // Check that notify event is sent by the button
       const notifyEvents = mockButtonDispatch.mock.calls
-        .map(call => call[0] as CustomEvent)
-        .filter(event => event.type === "notify");
+        .map((call) => call[0] as CustomEvent)
+        .filter((event) => event.type === "notify");
 
       expect(notifyEvents.length).toBe(1);
       expect(notifyEvents[0].detail).toEqual({
         message: "Success message",
         type: "success",
-        duration: 500
+        duration: 500,
       });
 
       document.body.removeChild(actionButton);
@@ -90,18 +87,15 @@ describe("EventRouter", () => {
       // Get the handler from EventRouter
       const eventRouter = EventRouter.getInstance();
       const handler = eventRouter["eventHandlers"].get("actionButtonEmit");
+      expect(handler).toBeTruthy();
       
-      if (!handler) {
-        throw new Error("actionButtonEmit handler not found in EventRouter");
-      }
-
       // Simulate an error event
       const errorEvent = new CustomEvent<ActionButtonEventDetail>("actionButtonEmit", {
         detail: {
           message: "Error message",
-          type: "error"
+          type: "error",
         },
-        bubbles: true
+        bubbles: true,
       });
       Object.defineProperty(errorEvent, "target", { value: actionButton });
 
@@ -109,18 +103,18 @@ describe("EventRouter", () => {
       const mockDocumentDispatch = vi.spyOn(document, "dispatchEvent");
 
       // Directly call the handler with the event
-      handler(errorEvent);
+      handler!(errorEvent);
 
       // Check that notify event is sent by the document
       const notifyEvents = mockDocumentDispatch.mock.calls
-        .map(call => call[0] as CustomEvent)
-        .filter(event => event.type === "notify");
+        .map((call) => call[0] as CustomEvent)
+        .filter((event) => event.type === "notify");
 
       expect(notifyEvents.length).toBe(1);
       expect(notifyEvents[0].detail).toEqual({
         message: "Error message",
         type: "error",
-        duration: 0
+        duration: 0,
       });
 
       document.body.removeChild(actionButton);
