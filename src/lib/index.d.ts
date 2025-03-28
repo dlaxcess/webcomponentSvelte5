@@ -5,7 +5,7 @@ import type { CounterType } from "./components/counter/types";
 import type { CounterDisplayType } from "./components/counterDisplay/types";
 import type { NotifierType } from "./components/notifier/types";
 import type { SecurePinPadElement } from "./components/securePinPad/types";
-import type { SliderType } from "./components/slider/types";
+import type { CarouselType } from "./components/carousel/types";
 
 // Re-export all types for direct access
 export * from "./components/actionButton/types";
@@ -13,7 +13,7 @@ export * from "./components/counter/types";
 export * from "./components/counterDisplay/types";
 export * from "./components/notifier/types";
 export * from "./components/securePinPad/types";
-export * from "./components/slider/types";
+export * from "./components/carousel/types";
 
 declare module "webcomponentsvelte5" {
   declare global {
@@ -24,7 +24,7 @@ declare module "webcomponentsvelte5" {
         "counterdisplay-component": CounterDisplayType;
         "notifier-component": NotifierType;
         "securepin-component": SecurePinPadElement;
-        "pc-slider": SliderType;
+        "pc-carousel": CarouselType;
       }
     }
   }
@@ -55,7 +55,7 @@ declare module "webcomponentsvelte5/components/notifier" {
   export * from "./components/notifier/types";
 }
 
-declare module "webcomponentsvelte5/components/slider" {
+declare module "webcomponentsvelte5/components/carousel" {
   export default function (): void;
-  export * from "./components/slider/types";
+  export * from "./components/carousel/types";
 }

@@ -1,17 +1,17 @@
-<svelte:options customElement="pc-slider" />
+<svelte:options customElement="pc-carousel" />
 
 <script lang="ts">
-    import type { SliderProps } from "./types";
+    import type { CarouselProps } from "./types";
 
     let { title = "" } = $props();
     
-    let sliderContainer: HTMLElement;
+    let carouselContainer: HTMLElement;
     let scrollAmount = 0;
     const scrollStep = 200;
 
     function scrollLeft() {
         scrollAmount = Math.max(0, scrollAmount - scrollStep);
-        sliderContainer.scrollTo({
+        carouselContainer.scrollTo({
             left: scrollAmount,
             behavior: 'smooth'
         });
@@ -19,10 +19,10 @@
 
     function scrollRight() {
         scrollAmount = Math.min(
-            sliderContainer.scrollWidth - sliderContainer.clientWidth,
+            carouselContainer.scrollWidth - carouselContainer.clientWidth,
             scrollAmount + scrollStep
         );
-        sliderContainer.scrollTo({
+        carouselContainer.scrollTo({
             left: scrollAmount,
             behavior: 'smooth'
         });
@@ -30,13 +30,13 @@
 
     $effect(() => {
         // Set default styles on the host element
-        $host().style.setProperty('--slider-width', '100%');
-        $host().style.setProperty('--slider-max-width', '100%');
+        $host().style.setProperty('--carousel-width', '100%');
+        $host().style.setProperty('--carousel-max-width', '100%');
     });
 </script>
 
-<div class="slider-wrapper">
-    <div class="slider-header">
+<div class="carousel-wrapper">
+    <div class="carousel-header">
         <slot name="title"></slot>
         <div class="navigation-buttons">
             <button class="nav-button" onclick={scrollLeft}>&lt;</button>
@@ -44,8 +44,8 @@
         </div>
     </div>
     
-    <div class="slider-container" bind:this={sliderContainer}>
-        <div class="slider-content">
+    <div class="carousel-container" bind:this={carouselContainer}>
+        <div class="carousel-content">
             <slot name="items"></slot>
         </div>
     </div>
@@ -54,17 +54,17 @@
 <style>
     :host {
         display: block;
-        width: var(--slider-width);
-        max-width: var(--slider-max-width);
+        width: var(--carousel-width);
+        max-width: var(--carousel-max-width);
     }
 
-    .slider-wrapper {
+    .carousel-wrapper {
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
     }
 
-    .slider-header {
+    .carousel-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -77,7 +77,7 @@
     }
 
     .nav-button {
-        background-color: var(--slider-nav-bg, #f0f0f0);
+        background-color: var(--carousel-nav-bg, #f0f0f0);
         border: none;
         border-radius: 50%;
         width: 30px;
@@ -90,22 +90,22 @@
     }
 
     .nav-button:hover {
-        background-color: var(--slider-nav-hover-bg, #e0e0e0);
+        background-color: var(--carousel-nav-hover-bg, #e0e0e0);
     }
 
-    .slider-container {
+    .carousel-container {
         width: 100%;
         overflow-x: hidden;
         position: relative;
     }
 
-    .slider-content {
+    .carousel-content {
         display: flex;
         gap: 1rem;
         transition: transform 0.3s ease;
     }
 
-    :global(.slider-content > *) {
+    :global(.carousel-content > *) {
         flex-shrink: 0;
     }
 </style>

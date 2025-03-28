@@ -1,9 +1,9 @@
 // @ts-check
-import Slider from './Slider.svelte';
+import Carousel from './Carousel.svelte';
 
 /** @typedef {import('svelte').SvelteComponent} SvelteComponent */
 
-class SliderElement extends HTMLElement {
+class CarouselElement extends HTMLElement {
     /** @type {SvelteComponent|undefined} */
     _element;
 
@@ -13,7 +13,7 @@ class SliderElement extends HTMLElement {
     }
 
     connectedCallback() {
-        this._element = new Slider({
+        this._element = new Carousel({
             target: this.shadowRoot
         });
     }
@@ -23,8 +23,8 @@ class SliderElement extends HTMLElement {
     }
 }
 
-if (!customElements.get('pc-slider')) {
-    customElements.define('pc-slider', SliderElement);
+if (!customElements.get('pc-carousel')) {
+    customElements.define('pc-carousel', CarouselElement);
 }
 
-export default Slider;
+export default Carousel;
