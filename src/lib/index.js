@@ -4,3 +4,5 @@ export { default as CounterDisplay } from './components/counterDisplay/index.js'
 export { default as Notifier } from './components/notifier/index.js';
 export { default as SecurePinPad } from './components/securePinPad/index.js';
 export { default as Carousel } from './components/carousel/index.js';
+export { default as Dropdown } from './components/dropdown/index.js';
+export { default as ResponsiveContainer } from './components/responsive-container/index.js';
