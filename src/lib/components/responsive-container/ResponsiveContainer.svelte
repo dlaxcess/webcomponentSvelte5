@@ -3,27 +3,36 @@
 <script lang="ts">
   import Carousel from '../carousel/Carousel.svelte';
   import Dropdown from '../dropdown/Dropdown.svelte';
+  import type { CarouselProps, DropdownProps, ContainerProps } from './types';
 
-  type ResponsiveComponent = typeof Carousel | typeof Dropdown;
+  const props = $props();
+  const { 
+    carouselProps = {},
+    dropdownProps = {},
+    containerProps = { breakpoint: 768 }
+  } = props as {
+    carouselProps?: CarouselProps & Record<string, never>;
+    dropdownProps?: DropdownProps & Record<string, never>;
+    containerProps?: ContainerProps & Record<string, never>;
+  };
 
-  let { breakpoint = 768 } = $props<{ breakpoint?: number }>();
-  let Component = $state<ResponsiveComponent>(Carousel);
+  let Component = $state<typeof Carousel | typeof Dropdown>(Carousel);
+  let currentProps = $state<(CarouselProps & Record<string, never>) | (DropdownProps & Record<string, never>)>(carouselProps);
 
   function updateLayout() {
+    const breakpoint = containerProps.breakpoint ?? 768;
     Component = window.innerWidth > breakpoint ? Carousel : Dropdown;
+    currentProps = Component === Carousel ? carouselProps : dropdownProps;
   }
 
   $effect(() => {
-    // Initial layout update
     updateLayout();
-
-    // Add resize listener
     window.addEventListener('resize', updateLayout);
     return () => window.removeEventListener('resize', updateLayout);
   });
 </script>
 
-<Component>
+<Component {...currentProps}>
   <slot name="title" slot="title"></slot>
   <slot name="items" slot="items"></slot>
 </Component>
@@ -32,5 +41,6 @@
   :host {
     display: block;
     width: 100%;
+    height: 100%;
   }
 </style>
