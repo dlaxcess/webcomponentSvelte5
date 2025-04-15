@@ -7,10 +7,10 @@
   type ResponsiveComponent = typeof Carousel | typeof Dropdown;
 
   let { breakpoint = 768 } = $props<{ breakpoint?: number }>();
-  let component = $state<ResponsiveComponent>(Carousel);
+  let Component = $state<ResponsiveComponent>(Carousel);
 
   function updateLayout() {
-    component = window.innerWidth > breakpoint ? Carousel : Dropdown;
+    Component = window.innerWidth > breakpoint ? Carousel : Dropdown;
   }
 
   $effect(() => {
@@ -23,10 +23,10 @@
   });
 </script>
 
-<svelte:component this={component}>
+<Component>
   <slot name="title" slot="title"></slot>
   <slot name="items" slot="items"></slot>
-</svelte:component>
+</Component>
 
 <style>
   :host {
