@@ -13,12 +13,15 @@ export interface DropdownProps {
 
 export interface ContainerProps {
     breakpoint?: number;
+    largeComponent?: string;
+    smallComponent?: string;
 }
 
+export type ComponentProps = Record<string, any>;
+
 export interface ResponsiveContainerProps {
-    carouselProps?: CarouselProps;
-    dropdownProps?: DropdownProps;
     containerProps?: ContainerProps;
+    [key: string]: ContainerProps | ComponentProps | undefined;
 }
 
 export interface ResponsiveContainerSlots {
