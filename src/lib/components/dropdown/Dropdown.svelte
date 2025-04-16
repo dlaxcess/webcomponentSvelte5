@@ -9,10 +9,10 @@
   }
 
   function handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       toggleDropdown();
-    } else if (event.key === 'Escape' && isOpen) {
+    } else if (event.key === "Escape" && isOpen) {
       isOpen = false;
     }
   }
@@ -25,24 +25,43 @@
   }
 
   $effect(() => {
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  });
+
+  $effect(() => {
+    const slot = dropdownContainer?.querySelector('slot[name="items"]');
+    if (slot instanceof HTMLSlotElement) {
+      // Obtenir les éléments assignés au slot
+      const assignedElements = slot.assignedElements();
+      
+      // Ajouter des event listeners à chaque élément
+      assignedElements.forEach(element => {
+        element.addEventListener('click', (e) => {
+          const target = e.target as HTMLElement;
+          if (target.closest('.item')) {
+            console.log('Dropdown item clicked:', target);
+            isOpen = false; // Fermer le dropdown après un clic
+          }
+        });
+      });
+    }
   });
 </script>
 
 <div class="dropdown" bind:this={dropdownContainer}>
-  <button 
+  <button
     type="button"
-    class="dropdown-header" 
+    class="dropdown-header"
     onclick={toggleDropdown}
     onkeydown={handleKeyDown}
     aria-expanded={isOpen}
     aria-haspopup="true"
   >
-    <slot name="title"></slot>
+    <slot name="header"></slot>
     <span class="arrow" class:open={isOpen}>▼</span>
   </button>
-  
+
   {#if isOpen}
     <div class="dropdown-content" role="listbox">
       <slot name="items"></slot>

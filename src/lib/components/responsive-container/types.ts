@@ -12,9 +12,9 @@ export interface DropdownProps {
 }
 
 export interface ContainerProps {
-    breakpoint?: number;
-    largeComponent?: string;
-    smallComponent?: string;
+  breakpoint?: number;
+  largeScreenComponent?: string;
+  smallScreenComponent?: string;
 }
 
 export type ComponentProps = Record<string, any>;

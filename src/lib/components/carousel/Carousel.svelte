@@ -34,18 +34,29 @@
     // Get items from the slot content
     const slot = carouselContainer?.querySelector('slot[name="items"]');
     if (slot instanceof HTMLSlotElement) {
-      const parent = slot.assignedElements()[0];
-      if (parent) {
-        items = Array.from(parent.querySelectorAll('.item'));
-        console.log('Found items:', items);
-      }
+      // Écouter les changements du slot
+      slot.addEventListener('slotchange', (e) => {
+        const assignedElements = slot.assignedElements();
+        if (assignedElements.length > 0) {
+          const parent = assignedElements[0];
+          items = Array.from(parent.querySelectorAll(".item"));
+        }
+      });
+
+      // Écouter les clics sur les éléments du slot
+      slot.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('.item')) {
+          console.log('Item clicked:', target);
+        }
+      });
     }
   });
 </script>
 
 <div class="carousel-wrapper">
   <div class="carousel-header">
-    <slot name="title"></slot>
+    <slot name="header"></slot>
     <div class="navigation-buttons">
       <button class="nav-button" onclick={scrollLeft}>&lt;</button>
       <button class="nav-button" onclick={scrollRight}>&gt;</button>
