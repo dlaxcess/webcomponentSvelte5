@@ -1,6 +1,6 @@
 <svelte:options
   customElement={{
-    tag: "pc-carousel",
+    tag: "pc-slider",
     props: {
       horizontalCount: { type: "Number", attribute: "horizontal-count" },
     },
@@ -8,14 +8,11 @@
 />
 
 <script lang="ts">
-  import type { CarouselProps } from "./types";
   import { onMount } from "svelte";
 
   let { horizontalCount = 2 } = $props<{
     horizontalCount?: string;
   }>();
-
-  // let horizontalCount = $derived(Number(horizontalCountProp));
 
   let currentItemKey = $state<number>(0);
 

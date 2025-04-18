@@ -1,6 +1,6 @@
 <svelte:options
   customElement={{
-    tag: "pc-responsive-container",
+    tag: "pc-list-section",
     props: {
       breakpoint: { type: "String" },
       verticalCount: { type: "Number", attribute: "vertical-count" },
@@ -10,8 +10,8 @@
 />
 
 <script lang="ts">
-  import Carousel from "../carousel/Carousel.svelte";
-  import Dropdown from "../dropdown/Dropdown.svelte";
+  import Slider from "../slider/Slider.svelte";
+  import ShowMore from "../showMore/ShowMore.svelte";
   import { onMount } from "svelte";
 
   let {
@@ -24,23 +24,22 @@
     horizontalCount?: number;
   }>();
 
-  $effect(() => {
-    console.log(" verticalCount: ", verticalCount);
-    console.log(" horizontalCount: ", horizontalCount);
-  });
-
   let activeBreakpoint = $state(breakpoint);
   let query = $state<MediaQueryList | null>(null);
 
-  let Component = $state<any>(Carousel);
-  let componentProps = $derived(Component === Carousel ? { horizontalCount } : { verticalCount });
+  let Component = $state<any>(Slider);
+  let componentProps = $derived(
+    Component === Slider ? { horizontalCount } : { verticalCount },
+  );
 
   const updateComponent = (matchQuery: boolean) => {
-    Component = matchQuery ? Carousel : Dropdown;
+    Component = matchQuery ? Slider : ShowMore;
   };
 
   onMount(() => {
-    const cssBreakpointVarValue = getComputedStyle($host()).getPropertyValue("--breakpoint").trim();
+    const cssBreakpointVarValue = getComputedStyle($host())
+      .getPropertyValue("--breakpoint")
+      .trim();
     if (cssBreakpointVarValue) {
       activeBreakpoint = cssBreakpointVarValue;
     }
