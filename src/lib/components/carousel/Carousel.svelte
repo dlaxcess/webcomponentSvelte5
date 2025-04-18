@@ -4,7 +4,7 @@
   import type { CarouselProps } from "./types";
   import { onMount } from "svelte";
 
-  let { itemsPerScroll = 2 } = $props();
+  let { horizontalCount = 2 } = $props();
 
   let currentItemKey = $state<number>(0);
 
@@ -20,20 +20,20 @@
 
   let startItemsLeft = $state(0);
 
-  let currentItemsPerScroll = $state(2);
+  let currentHorizontalCount = $state(horizontalCount);
 
   let isResizing = $state(false);
 
   function scrollLeft() {
     const newCurrentItemKey =
-      currentItemsPerScroll * Math.ceil(currentItemKey / currentItemsPerScroll) - currentItemsPerScroll;
+      currentHorizontalCount * Math.ceil(currentItemKey / currentHorizontalCount) - currentHorizontalCount;
 
     scrollToItem(newCurrentItemKey);
   }
 
   function scrollRight() {
     const newCurrentItemKey =
-      currentItemsPerScroll * Math.floor(currentItemKey / currentItemsPerScroll) + currentItemsPerScroll;
+      currentHorizontalCount * Math.floor(currentItemKey / currentHorizontalCount) + currentHorizontalCount;
 
     scrollToItem(newCurrentItemKey);
   }
@@ -126,21 +126,21 @@
     carouselContainer.style.setProperty("--_scroll-padding-left", `${startItemsLeft}px`);
     // }
 
-    if (items.length >= currentItemsPerScroll) {
-      currentItemsPerScroll = itemsPerScroll;
+    if (items.length >= currentHorizontalCount) {
+      currentHorizontalCount = horizontalCount;
 
       const lastItemRight = items[items.length - 1].getBoundingClientRect().right;
 
-      const itemsPerScrollToLastLeft = items[items.length - currentItemsPerScroll].getBoundingClientRect().left;
+      const itemsPerScrollToLastLeft = items[items.length - currentHorizontalCount].getBoundingClientRect().left;
 
       let lastItemsWidth = lastItemRight - itemsPerScrollToLastLeft;
 
       const carouselContainerWidth = carouselContainer.clientWidth;
 
       while (lastItemsWidth > carouselContainerWidth) {
-        currentItemsPerScroll -= 1;
+        currentHorizontalCount -= 1;
 
-        const previousItemToLastLeft = items[items.length - currentItemsPerScroll].getBoundingClientRect().left;
+        const previousItemToLastLeft = items[items.length - currentHorizontalCount].getBoundingClientRect().left;
 
         lastItemsWidth = lastItemRight - previousItemToLastLeft;
       }

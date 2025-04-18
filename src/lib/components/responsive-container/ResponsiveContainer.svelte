@@ -9,7 +9,7 @@
   import { onMount } from "svelte";
 
   let {
-    breakpoint,
+    breakpoint = "480px",
     verticalCount = 3,
     horizontalCount = 2,
   } = $props<{
@@ -18,7 +18,7 @@
     horizontalCount?: number;
   }>();
 
-  let activeBreakpoint = $state("480px");
+  let activeBreakpoint = $state(breakpoint);
   let query = $state<MediaQueryList | null>(null);
 
   let Component = $state<typeof Carousel | typeof Dropdown>(Carousel);
@@ -29,7 +29,9 @@
 
   onMount(() => {
     const cssBreakpointVarValue = getComputedStyle($host()).getPropertyValue("--breakpoint").trim();
-    activeBreakpoint = cssBreakpointVarValue || breakpoint;
+    if (cssBreakpointVarValue) {
+      activeBreakpoint = cssBreakpointVarValue;
+    }
 
     query = query = matchMedia(`(min-width: ${activeBreakpoint})`);
     updateComponent(query.matches);

@@ -1,8 +1,12 @@
-export interface DropdownProps {}
-
-export interface DropdownSlots {
-    title: boolean;
-    items: boolean;
+export interface DropdownProps {
+    verticalCount?: number;
 }
 
-export type DropdownType = DropdownProps & DropdownSlots;
+export interface DropdownSlots {
+    header: {};
+    items: {};
+    'show-more': {};
+    'show-less': {};
+}
+
+export type DropdownType = DropdownProps & { slots: DropdownSlots };

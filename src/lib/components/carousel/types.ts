@@ -1,10 +1,10 @@
 export interface CarouselProps {
-    title?: string;
+  horizontalScroll?: number;
 }
 
 export interface CarouselSlots {
-    title: boolean;
-    items: boolean;
+  header: {};
+  items: {};
 }
 
-export type CarouselType = CarouselProps & CarouselSlots;
+export type CarouselType = CarouselProps & { slots: CarouselSlots };
