@@ -1,122 +1,128 @@
 <svelte:options customElement="pc-dropdown" />
 
 <script lang="ts">
+  import { onMount } from "svelte";
+
+  let { verticalCount = 3 } = $props<{
+    verticalCount?: number;
+  }>();
+
   let isOpen = $state(false);
   let dropdownContainer: HTMLElement;
+  let items = $state<HTMLElement[] | null>(null);
+  let showMoreBtn = $state<HTMLButtonElement | null>(null);
+  let showLessBtn = $state<HTMLButtonElement | null>(null);
 
-  function toggleDropdown() {
-    isOpen = !isOpen;
-  }
+  // function toggleDropdown() {
+  //   console.log(" toggleDropdown isOpen 1: ", isOpen);
+  //   isOpen = !isOpen;
+  //   console.log(" toggleDropdown isOpen 2: ", isOpen);
+  // }
 
-  function handleKeyDown(event: KeyboardEvent) {
+  // const open = () => {
+  //   isOpen = true;
+  // };
+
+  // const close = () => {
+  //   isOpen = false;
+  // };
+
+  const showAll = () => {
+    items?.forEach((item) => {
+      item.style.display = "block";
+    });
+    if (!showMoreBtn || !showLessBtn) return;
+    showMoreBtn.style.display = "none";
+    showLessBtn.style.display = "block";
+    isOpen = true;
+  };
+
+  const showVerticalCount = () => {
+    items?.forEach((item, index) => {
+      if (index >= verticalCount) item.style.display = "none";
+    });
+    if (!showMoreBtn || !showLessBtn) return;
+    showMoreBtn.style.display = "block";
+    showLessBtn.style.display = "none";
+    isOpen = false;
+  };
+
+  const handleKeyDownOpen = (event: KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      toggleDropdown();
-    } else if (event.key === "Escape" && isOpen) {
-      isOpen = false;
-    }
-  }
+      showAll();
+      const itemToFocus = items?.[verticalCount];
+      const link = itemToFocus?.querySelector("a");
 
-  // Close dropdown when clicking outside
-  function handleClickOutside(event: MouseEvent) {
-    if (dropdownContainer && !dropdownContainer.contains(event.target as Node)) {
-      isOpen = false;
+      if (link) {
+        link.focus();
+      } else if (itemToFocus?.hasAttribute("tabindex")) {
+        itemToFocus?.focus();
+      }
     }
-  }
+  };
 
-  $effect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  });
-
-  $effect(() => {
-    const slot = dropdownContainer?.querySelector('slot[name="items"]');
-    if (slot instanceof HTMLSlotElement) {
-      // Obtenir les éléments assignés au slot
-      const assignedElements = slot.assignedElements();
-      
-      // Ajouter des event listeners à chaque élément
-      assignedElements.forEach(element => {
-        element.addEventListener('click', (e) => {
-          const target = e.target as HTMLElement;
-          if (target.closest('.item')) {
-            console.log('Dropdown item clicked:', target);
-            isOpen = false; // Fermer le dropdown après un clic
-          }
-        });
-      });
+  const handleKeyDownClose = (event: KeyboardEvent) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      showVerticalCount();
+      showMoreBtn?.focus();
     }
+  };
+
+  const handleEscClose = (event: KeyboardEvent) => {
+    if (event.key === "Escape" && isOpen) {
+      event.preventDefault();
+      showVerticalCount();
+      showMoreBtn?.focus();
+    }
+  };
+
+  onMount(() => {
+    const ContentSlot = dropdownContainer?.querySelector('slot[name="items"]');
+    const showMoreBtnSlot = dropdownContainer?.querySelector('slot[name="show-more"]');
+    const showLessBtnSlot = dropdownContainer?.querySelector('slot[name="show-less"]');
+
+    if (!(ContentSlot instanceof HTMLSlotElement)) return;
+    if (!(showMoreBtnSlot instanceof HTMLSlotElement)) return;
+    if (!(showLessBtnSlot instanceof HTMLSlotElement)) return;
+
+    const content = ContentSlot.assignedElements()[0] as HTMLElement;
+    items = Array.from(content.querySelectorAll(".item"));
+    showMoreBtn = showMoreBtnSlot.assignedElements()[0] as HTMLButtonElement;
+    showLessBtn = showLessBtnSlot.assignedElements()[0] as HTMLButtonElement;
+
+    content.addEventListener("keydown", handleEscClose);
+    showMoreBtn.addEventListener("click", showAll);
+    showMoreBtn.addEventListener("keydown", handleKeyDownOpen);
+
+    showLessBtn.addEventListener("click", showVerticalCount);
+    showLessBtn.addEventListener("keydown", handleKeyDownClose);
+
+    showVerticalCount();
+
+    return () => {
+      content.removeEventListener("keydown", handleEscClose);
+      showMoreBtn?.removeEventListener("click", showAll);
+      showMoreBtn?.removeEventListener("keydown", handleKeyDownOpen);
+
+      showLessBtn?.removeEventListener("click", showVerticalCount);
+      showLessBtn?.addEventListener("keydown", handleKeyDownClose);
+    };
   });
 </script>
 
 <div class="dropdown" bind:this={dropdownContainer}>
-  <button
-    type="button"
-    class="dropdown-header"
-    onclick={toggleDropdown}
-    onkeydown={handleKeyDown}
-    aria-expanded={isOpen}
-    aria-haspopup="true"
-  >
-    <slot name="header"></slot>
-    <span class="arrow" class:open={isOpen}>▼</span>
-  </button>
+  <slot name="header"></slot>
 
-  {#if isOpen}
-    <div class="dropdown-content" role="listbox">
-      <slot name="items"></slot>
-    </div>
-  {/if}
+  <!-- {#if isOpen} -->
+  <div class="dropdown-content" role="listbox">
+    <slot name="items"></slot>
+  </div>
+  <!-- {/if} -->
+  <slot name="show-more"></slot>
+  <slot name="show-less"></slot>
 </div>
 
 <style>
-  .dropdown {
-    position: relative;
-    width: 100%;
-  }
-
-  .dropdown-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 0.5rem 1rem;
-    background: var(--dropdown-bg, #ffffff);
-    border: 1px solid var(--dropdown-border, #e0e0e0);
-    border-radius: 4px;
-    cursor: pointer;
-    font: inherit;
-  }
-
-  .arrow {
-    transition: transform 0.3s ease;
-  }
-
-  .arrow.open {
-    transform: rotate(180deg);
-  }
-
-  .dropdown-content {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--dropdown-content-bg, #ffffff);
-    border: 1px solid var(--dropdown-border, #e0e0e0);
-    border-top: none;
-    border-radius: 0 0 4px 4px;
-    z-index: 1000;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  /* Style pour les items (à appliquer via CSS sur les éléments slot) */
-  :global(.dropdown-content ::slotted(.item)) {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-  }
-
-  :global(.dropdown-content ::slotted(.item:hover)) {
-    background-color: var(--dropdown-hover-bg, #f5f5f5);
-  }
 </style>

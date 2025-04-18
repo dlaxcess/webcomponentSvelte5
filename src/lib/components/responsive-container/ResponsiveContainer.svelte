@@ -1,46 +1,59 @@
 <svelte:options customElement="pc-responsive-container" />
 
 <script lang="ts">
-  import Carousel from '../carousel/Carousel.svelte';
-  import Dropdown from '../dropdown/Dropdown.svelte';
-  import type { CarouselProps, DropdownProps, ContainerProps } from './types';
+  import type { ResponsiveContainerProps } from "./types";
+  import type { CarouselProps } from "../carousel/types";
+  import type { DropdownProps } from "../dropdown/types";
+  import Carousel from "../carousel/Carousel.svelte";
+  import Dropdown from "../dropdown/Dropdown.svelte";
+  import { onMount } from "svelte";
 
-  const props = $props();
-  const { 
-    carouselProps = {},
-    dropdownProps = {},
-    containerProps = { breakpoint: 768 }
-  } = props as {
-    carouselProps?: CarouselProps & Record<string, never>;
-    dropdownProps?: DropdownProps & Record<string, never>;
-    containerProps?: ContainerProps & Record<string, never>;
-  };
+  let {
+    breakpoint,
+    verticalCount = 3,
+    horizontalCount = 2,
+  } = $props<{
+    breakpoint?: string;
+    verticalCount?: number;
+    horizontalCount?: number;
+  }>();
+
+  let activeBreakpoint = $state("480px");
+  let query = $state<MediaQueryList | null>(null);
 
   let Component = $state<typeof Carousel | typeof Dropdown>(Carousel);
-  let currentProps = $state<(CarouselProps & Record<string, never>) | (DropdownProps & Record<string, never>)>(carouselProps);
 
-  function updateLayout() {
-    const breakpoint = containerProps.breakpoint ?? 768;
-    Component = window.innerWidth > breakpoint ? Carousel : Dropdown;
-    currentProps = Component === Carousel ? carouselProps : dropdownProps;
-  }
+  const updateComponent = (matchQuery: boolean) => {
+    Component = matchQuery ? Carousel : Dropdown;
+  };
 
-  $effect(() => {
-    updateLayout();
-    window.addEventListener('resize', updateLayout);
-    return () => window.removeEventListener('resize', updateLayout);
+  onMount(() => {
+    const cssBreakpointVarValue = getComputedStyle($host()).getPropertyValue("--breakpoint").trim();
+    activeBreakpoint = cssBreakpointVarValue || breakpoint;
+
+    query = query = matchMedia(`(min-width: ${activeBreakpoint})`);
+    updateComponent(query.matches);
+
+    const handler = (e: MediaQueryListEvent) => updateComponent(e.matches);
+    query.addEventListener("change", handler);
+
+    return () => {
+      return () => query?.removeEventListener("change", handler);
+    };
   });
 </script>
 
-<Component {...currentProps}>
-  <slot name="title" slot="title"></slot>
+<Component>
+  <slot name="header" slot="header"></slot>
   <slot name="items" slot="items"></slot>
+  <slot name="show-more" slot="show-more"></slot>
+  <slot name="show-less" slot="show-less"></slot>
 </Component>
 
 <style>
-  :host {
+  /* :host {
     display: block;
     width: 100%;
     height: 100%;
-  }
+  } */
 </style>
