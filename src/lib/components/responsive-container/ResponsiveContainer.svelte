@@ -8,14 +8,7 @@
   import Dropdown from "../dropdown/Dropdown.svelte";
   import { onMount } from "svelte";
 
-  let {
-    breakpoint = "480px",
-    verticalCount: verticalCountProp = "3",
-    horizontalCount: horizontalCountProp = "2",
-  } = $props();
-
-  let verticalCount = $derived(Number(verticalCountProp));
-  let horizontalCount = $derived(Number(horizontalCountProp));
+  let { breakpoint = "480px", verticalCount = "3", horizontalCount = "2" } = $props();
 
   let activeBreakpoint = $state(breakpoint);
   let query = $state<MediaQueryList | null>(null);
