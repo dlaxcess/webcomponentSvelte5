@@ -3,24 +3,24 @@
 <script lang="ts">
   import type { CarouselProps } from "../carousel/types";
   import type { DropdownProps } from "../dropdown/types";
+  import type { ResponsiveContainerProps } from "./types";
   import Carousel from "../carousel/Carousel.svelte";
   import Dropdown from "../dropdown/Dropdown.svelte";
   import { onMount } from "svelte";
 
   let {
     breakpoint = "480px",
-    verticalCount = 3,
-    horizontalCount = 2,
-  } = $props<{
-    breakpoint?: string;
-    verticalCount?: number;
-    horizontalCount?: number;
-  }>();
+    verticalCount: verticalCountProp = "3",
+    horizontalCount: horizontalCountProp = "2",
+  } = $props();
+
+  let verticalCount = $derived(Number(verticalCountProp));
+  let horizontalCount = $derived(Number(horizontalCountProp));
 
   let activeBreakpoint = $state(breakpoint);
   let query = $state<MediaQueryList | null>(null);
 
-  let Component = $state<typeof Carousel | typeof Dropdown>(Carousel);
+  let Component = $state<any>(Carousel);
   let componentProps = $derived(Component === Carousel ? { horizontalCount } : { verticalCount });
 
   const updateComponent = (matchQuery: boolean) => {

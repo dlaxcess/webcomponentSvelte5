@@ -1,32 +1,12 @@
-import type { SvelteComponent } from 'svelte';
-
-export interface CarouselProps {
-    // Ajoutez ici les props spécifiques au carousel
-    speed?: number;
-    autoplay?: boolean;
-}
-
-export interface DropdownProps {
-    // Ajoutez ici les props spécifiques au dropdown
-    maxHeight?: string;
-}
-
-export interface ContainerProps {
-  breakpoint?: number;
-  largeScreenComponent?: string;
-  smallScreenComponent?: string;
-}
-
-export type ComponentProps = Record<string, any>;
+import type { CarouselSlots } from "../carousel/types";
+import type { DropdownSlots } from "../dropdown/types";
 
 export interface ResponsiveContainerProps {
-    containerProps?: ContainerProps;
-    [key: string]: ContainerProps | ComponentProps | undefined;
+  breakpoint?: string;
+  verticalCount?: number;
+  horizontalCount?: number;
 }
 
-export interface ResponsiveContainerSlots {
-    title: boolean;
-    items: boolean;
-}
+export type ResponsiveContainerSlots = CarouselSlots & DropdownSlots;
 
 export type ResponsiveContainerType = ResponsiveContainerProps & ResponsiveContainerSlots;

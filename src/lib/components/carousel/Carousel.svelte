@@ -4,7 +4,9 @@
   import type { CarouselProps } from "./types";
   import { onMount } from "svelte";
 
-  let { horizontalCount = 2 } = $props();
+  let { horizontalCount: horizontalCountProp = "2" } = $props();
+
+  let horizontalCount = $derived(Number(horizontalCountProp));
 
   let currentItemKey = $state<number>(0);
 

@@ -3,9 +3,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let { verticalCount = 3 } = $props<{
+  let { verticalCount: verticalCountProp = "3" } = $props<{
     verticalCount?: number;
   }>();
+
+  let verticalCount = $derived(Number(verticalCountProp));
 
   let isOpen = $state(false);
   let dropdownContainer: HTMLElement;
