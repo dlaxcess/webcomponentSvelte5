@@ -1,5 +1,5 @@
 export interface DropdownProps {
-    verticalCount?: number;
+    verticalCount?: string;
 }
 
 export interface DropdownSlots {

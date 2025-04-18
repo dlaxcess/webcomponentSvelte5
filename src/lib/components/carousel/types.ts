@@ -1,5 +1,5 @@
 export interface CarouselProps {
-  horizontalCount?: number;
+  horizontalCount?: string;
 }
 
 export interface CarouselSlots {

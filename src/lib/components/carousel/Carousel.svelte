@@ -22,7 +22,7 @@
 
   let startItemsLeft = $state(0);
 
-  let currentHorizontalCount = $state(horizontalCount);
+  let currentHorizontalCount = $state(Number(horizontalCountProp));
 
   let isResizing = $state(false);
 
