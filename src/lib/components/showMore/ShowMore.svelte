@@ -15,17 +15,12 @@
   }>();
 
   let showMoreContainer: HTMLElement;
+  let list = $state<HTMLUListElement | null>(null);
   let items = $state<HTMLElement[] | null>(null);
   let showMoreBtn = $state<HTMLButtonElement | null>(null);
   let showLessBtn = $state<HTMLButtonElement | null>(null);
-  let list = $state<HTMLUListElement | null>(null);
 
-  function getFocusableElement(item: HTMLElement): HTMLElement {
-    // On cherche en priorité un bouton, sinon un lien
-    return item.querySelector("button") || (item.querySelector("a") as HTMLElement);
-  }
-
-  function toggleVisibility(show: boolean) {
+  const toggleVisibility = (show: boolean) => {
     if (!items) return;
     items.forEach((item, index) => {
       item.style.display = show || index < verticalCount ? "block" : "none";
@@ -36,18 +31,13 @@
       showLessBtn.style.display = show ? "block" : "none";
     }
 
-    // Mettre à jour le message pour les lecteurs d'écran
     if (list) {
       const newItemsCount = show ? items.length - verticalCount : 0;
       list.setAttribute("aria-label", show ? `${newItemsCount} éléments supplémentaires affichés` : "Liste réduite");
     }
-  }
+  };
 
-  function handleKeyDown(event: KeyboardEvent, show: boolean) {
-    const target = event.target as HTMLElement;
-    const isShowMoreLessBtn = target === showMoreBtn || target === showLessBtn;
-
-    // Escape ferme toujours la liste quand elle est ouverte
+  const handleKeyDown = (event: KeyboardEvent, show: boolean) => {
     if (event.key === "Escape" && !show) {
       event.preventDefault();
       toggleVisibility(false);
@@ -55,8 +45,10 @@
       return;
     }
 
-    // Enter et Space ne fonctionnent que sur les boutons show/less
-    if (isShowMoreLessBtn && (event.key === "Enter" || event.key === " ")) {
+    const target = event.target as HTMLElement;
+    const isShowMoreLessButton = target === showMoreBtn || target === showLessBtn;
+
+    if (isShowMoreLessButton && (event.key === "Enter" || event.key === " ")) {
       event.preventDefault();
 
       if (show) {
@@ -70,7 +62,11 @@
         showMoreBtn?.focus();
       }
     }
-  }
+  };
+
+  const getFocusableElement = (item: HTMLElement): HTMLElement => {
+    return item.querySelector("button") || (item.querySelector("a") as HTMLElement);
+  };
 
   onMount(() => {
     const itemsSlot = showMoreContainer?.querySelector('slot[name="items"]') as HTMLSlotElement;
@@ -84,7 +80,6 @@
     )
       return;
 
-    // La liste est dans le contenu du slot
     list = itemsSlot.assignedElements()[0].querySelector("ul");
     items = Array.from(list?.querySelectorAll("li") || []);
 
@@ -95,12 +90,12 @@
       list.setAttribute("aria-live", "polite");
       showMoreBtn.setAttribute("aria-controls", list.id);
       showLessBtn.setAttribute("aria-controls", list.id);
-      // État initial des boutons
       showMoreBtn.ariaExpanded = "false";
       showLessBtn.ariaExpanded = "true";
+
+      list.addEventListener("keydown", (e) => handleKeyDown(e, false));
     }
 
-    showMoreContainer.addEventListener("keydown", (e) => handleKeyDown(e, false));
     showMoreBtn.addEventListener("click", () => toggleVisibility(true));
     showMoreBtn.addEventListener("keydown", (e) => handleKeyDown(e, true));
     showLessBtn.addEventListener("click", () => toggleVisibility(false));
@@ -109,7 +104,8 @@
     toggleVisibility(false);
 
     return () => {
-      showMoreContainer.removeEventListener("keydown", (e) => handleKeyDown(e, false));
+      list?.removeEventListener("keydown", (e) => handleKeyDown(e, false));
+      list?.removeAttribute("aria-live");
       if (showMoreBtn && showLessBtn) {
         showMoreBtn.removeEventListener("click", () => toggleVisibility(true));
         showMoreBtn.removeEventListener("keydown", (e) => handleKeyDown(e, true));
@@ -131,7 +127,9 @@
 
 <div bind:this={showMoreContainer} role="presentation">
   <slot name="header"></slot>
+
   <slot name="items"></slot>
+
   <slot name="show-more"></slot>
   <slot name="show-less"></slot>
 </div>
