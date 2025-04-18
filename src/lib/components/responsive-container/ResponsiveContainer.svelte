@@ -1,7 +1,6 @@
 <svelte:options customElement="pc-responsive-container" />
 
 <script lang="ts">
-  import type { ResponsiveContainerProps } from "./types";
   import type { CarouselProps } from "../carousel/types";
   import type { DropdownProps } from "../dropdown/types";
   import Carousel from "../carousel/Carousel.svelte";
@@ -22,6 +21,7 @@
   let query = $state<MediaQueryList | null>(null);
 
   let Component = $state<typeof Carousel | typeof Dropdown>(Carousel);
+  let componentProps = $derived(Component === Carousel ? { horizontalCount } : { verticalCount });
 
   const updateComponent = (matchQuery: boolean) => {
     Component = matchQuery ? Carousel : Dropdown;
@@ -33,29 +33,27 @@
       activeBreakpoint = cssBreakpointVarValue;
     }
 
-    query = query = matchMedia(`(min-width: ${activeBreakpoint})`);
+    query = matchMedia(`(min-width: ${activeBreakpoint})`);
     updateComponent(query.matches);
 
     const handler = (e: MediaQueryListEvent) => updateComponent(e.matches);
     query.addEventListener("change", handler);
 
     return () => {
-      return () => query?.removeEventListener("change", handler);
+      query?.removeEventListener("change", handler);
     };
   });
 </script>
 
-<Component>
+<Component {...componentProps}>
   <slot name="header" slot="header"></slot>
   <slot name="items" slot="items"></slot>
-  <slot name="show-more" slot="show-more"></slot>
-  <slot name="show-less" slot="show-less"></slot>
 </Component>
 
 <style>
-  /* :host {
+  :host {
     display: block;
     width: 100%;
     height: 100%;
-  } */
+  }
 </style>
