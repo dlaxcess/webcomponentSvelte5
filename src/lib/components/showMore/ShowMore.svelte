@@ -15,24 +15,10 @@
   }>();
 
   let isOpen = $state(false);
-  let dropdownContainer: HTMLElement;
+  let showMoreContainer: HTMLElement;
   let items = $state<HTMLElement[] | null>(null);
   let showMoreBtn = $state<HTMLButtonElement | null>(null);
   let showLessBtn = $state<HTMLButtonElement | null>(null);
-
-  // function toggleDropdown() {
-  //   console.log(" toggleDropdown isOpen 1: ", isOpen);
-  //   isOpen = !isOpen;
-  //   console.log(" toggleDropdown isOpen 2: ", isOpen);
-  // }
-
-  // const open = () => {
-  //   isOpen = true;
-  // };
-
-  // const close = () => {
-  //   isOpen = false;
-  // };
 
   const showAll = () => {
     items?.forEach((item) => {
@@ -86,9 +72,9 @@
   };
 
   onMount(() => {
-    const ContentSlot = dropdownContainer?.querySelector('slot[name="items"]');
-    const showMoreBtnSlot = dropdownContainer?.querySelector('slot[name="show-more"]');
-    const showLessBtnSlot = dropdownContainer?.querySelector('slot[name="show-less"]');
+    const ContentSlot = showMoreContainer?.querySelector('slot[name="items"]');
+    const showMoreBtnSlot = showMoreContainer?.querySelector('slot[name="show-more"]');
+    const showLessBtnSlot = showMoreContainer?.querySelector('slot[name="show-less"]');
 
     if (!(ContentSlot instanceof HTMLSlotElement)) return;
     if (!(showMoreBtnSlot instanceof HTMLSlotElement)) return;
@@ -119,14 +105,11 @@
   });
 </script>
 
-<div class="dropdown" bind:this={dropdownContainer}>
+<div bind:this={showMoreContainer} role="presentation">
   <slot name="header"></slot>
 
-  <!-- {#if isOpen} -->
-  <div class="dropdown-content" role="listbox">
-    <slot name="items"></slot>
-  </div>
-  <!-- {/if} -->
+  <slot name="items"></slot>
+
   <slot name="show-more"></slot>
   <slot name="show-less"></slot>
 </div>
