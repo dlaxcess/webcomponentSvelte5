@@ -48,6 +48,8 @@
 <Component {...componentProps}>
   <slot name="header" slot="header"></slot>
   <slot name="items" slot="items"></slot>
+  <slot name="show-more" slot="show-more"></slot>
+  <slot name="show-less" slot="show-less"></slot>
 </Component>
 
 <style>
