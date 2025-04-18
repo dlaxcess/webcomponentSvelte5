@@ -1,12 +1,21 @@
-<svelte:options customElement="pc-carousel" />
+<svelte:options
+  customElement={{
+    tag: "pc-carousel",
+    props: {
+      horizontalCount: { type: "Number", attribute: "horizontal-count" },
+    },
+  }}
+/>
 
 <script lang="ts">
   import type { CarouselProps } from "./types";
   import { onMount } from "svelte";
 
-  let { horizontalCount: horizontalCountProp = "2" } = $props();
+  let { horizontalCount = 2 } = $props<{
+    horizontalCount?: string;
+  }>();
 
-  let horizontalCount = $derived(Number(horizontalCountProp));
+  // let horizontalCount = $derived(Number(horizontalCountProp));
 
   let currentItemKey = $state<number>(0);
 
@@ -22,7 +31,7 @@
 
   let startItemsLeft = $state(0);
 
-  let currentHorizontalCount = $state(Number(horizontalCountProp));
+  let currentHorizontalCount = $state(horizontalCount);
 
   let isResizing = $state(false);
 

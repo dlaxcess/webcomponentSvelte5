@@ -1,14 +1,33 @@
-<svelte:options customElement="pc-responsive-container" />
+<svelte:options
+  customElement={{
+    tag: "pc-responsive-container",
+    props: {
+      breakpoint: { type: "String" },
+      verticalCount: { type: "Number", attribute: "vertical-count" },
+      horizontalCount: { type: "Number", attribute: "horizontal-count" },
+    },
+  }}
+/>
 
 <script lang="ts">
-  import type { CarouselProps } from "../carousel/types";
-  import type { DropdownProps } from "../dropdown/types";
-  import type { ResponsiveContainerProps } from "./types";
   import Carousel from "../carousel/Carousel.svelte";
   import Dropdown from "../dropdown/Dropdown.svelte";
   import { onMount } from "svelte";
 
-  let { breakpoint = "480px", verticalCount = "3", horizontalCount = "2" } = $props();
+  let {
+    breakpoint = "480px",
+    verticalCount = 3,
+    horizontalCount = 2,
+  } = $props<{
+    breakpoint?: string;
+    verticalCount?: number;
+    horizontalCount?: number;
+  }>();
+
+  $effect(() => {
+    console.log(" verticalCount: ", verticalCount);
+    console.log(" horizontalCount: ", horizontalCount);
+  });
 
   let activeBreakpoint = $state(breakpoint);
   let query = $state<MediaQueryList | null>(null);
@@ -46,9 +65,9 @@
 </Component>
 
 <style>
-  :host {
+  /* :host {
     display: block;
     width: 100%;
     height: 100%;
-  }
+  } */
 </style>

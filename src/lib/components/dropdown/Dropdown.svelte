@@ -1,13 +1,18 @@
-<svelte:options customElement="pc-dropdown" />
+<svelte:options
+  customElement={{
+    tag: "pc-dropdown",
+    props: {
+      verticalCount: { type: "Number", attribute: "vertical-count" },
+    },
+  }}
+/>
 
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let { verticalCount: verticalCountProp = "3" } = $props<{
+  let { verticalCount = 3 } = $props<{
     verticalCount?: number;
   }>();
-
-  let verticalCount = $derived(Number(verticalCountProp));
 
   let isOpen = $state(false);
   let dropdownContainer: HTMLElement;

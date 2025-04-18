@@ -3,8 +3,8 @@ import type { DropdownSlots } from "../dropdown/types";
 
 export interface ResponsiveContainerProps {
   breakpoint?: string;
-  verticalCount?: string;
-  horizontalCount?: string;
+  verticalCount?: number;
+  horizontalCount?: number;
 }
 
 export type ResponsiveContainerSlots = CarouselSlots & DropdownSlots;
