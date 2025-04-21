@@ -10,7 +10,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let { verticalCount = 3 } = $props<{
+  let { verticalCount = 2 } = $props<{
     verticalCount?: number;
   }>();
 
@@ -106,6 +106,9 @@
     return () => {
       list?.removeEventListener("keydown", (e) => handleKeyDown(e, false));
       list?.removeAttribute("aria-live");
+      items?.forEach((item) => {
+        item.style.display = "";
+      });
       if (showMoreBtn && showLessBtn) {
         showMoreBtn.removeEventListener("click", () => toggleVisibility(true));
         showMoreBtn.removeEventListener("keydown", (e) => handleKeyDown(e, true));
@@ -118,8 +121,8 @@
         showMoreBtn.removeAttribute("aria-expanded");
         showLessBtn.removeAttribute("aria-expanded");
 
-        showMoreBtn.style.display = "none";
-        showLessBtn.style.display = "none";
+        showMoreBtn.style.display = "";
+        showLessBtn.style.display = "";
       }
     };
   });

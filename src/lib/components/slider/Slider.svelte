@@ -31,88 +31,38 @@
 
   let isResizing = $state(false);
 
-  onMount(() => {
-    const HeaderSlot = sliderComponent?.querySelector('slot[name="header"]');
-    const itemsSlot = sliderComponent?.querySelector('slot[name="items"]');
-
-    if (!(HeaderSlot instanceof HTMLSlotElement)) return;
-    if (!(itemsSlot instanceof HTMLSlotElement)) return;
-
-    header = HeaderSlot.assignedElements()[0] as HTMLElement;
-    buttons = header.querySelectorAll("button");
-
-    itemsSlotContent = itemsSlot.assignedElements()[0] as HTMLElement;
-    list = itemsSlotContent.querySelector("ul");
-    if (list) items = Array.from(list.querySelectorAll("li"));
-
-    initSlider();
-
-    let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
-    const carouselContainerObserver = new ResizeObserver(() => {
-      isResizing = true;
-      clearTimeout(resizeTimeout);
-
-      resizeTimeout = setTimeout(() => {
-        isResizing = false;
-        setSliderPadding();
-      }, 150);
-    });
-    carouselContainerObserver.observe(sliderContainer);
-
-    onScrollEnd(sliderContainer, () => {
-      if (!isResizing) setCurrentITemKey();
-    });
-
-    //////////////////////////////
-    // Foucus
-    //////////////////////////////
-    // items.forEach((item, index) => {
-    //   item.addEventListener("keyup", (e) => {
-    //     if (!items) return;
-    //     e.preventDefault();
-    //     console.log("Item focused:", e.key);
-    //     let targetIndex = index;
-    //     if (e.key === "ArrowRight") targetIndex += 1;
-    //     if (e.key === "ArrowLeft") targetIndex -= 1;
-    //     items[targetIndex].tabIndex = 0;
-    //     items[targetIndex].focus();
-    //     scrollToItem(targetIndex);
-    //   });
-    // });
-
-    return () => {
-      clearTimeout(resizeTimeout);
-      carouselContainerObserver.disconnect();
-      disableSlider();
-    };
-  });
-
   //////////////////////////////////////////
   const initSlider = () => {
     if (!buttons || !list) return;
 
-    buttons.forEach((button) => (button.style.display = "block"));
+    buttons.forEach((button) => {
+      button.style.display = "block";
+      if (list) button.setAttribute("aria-controls", list.id);
+    });
     buttons[0].addEventListener("click", scrollLeft);
+    buttons[0].ariaLabel = "Previous";
     buttons[1].addEventListener("click", scrollRight);
+    buttons[1].ariaLabel = "next";
 
     // Override direct items parent styles that was setted in case of Javascript disabled in browser
     list.style.overflow = "initial";
     list.style.width = "fit-content";
 
-    items?.forEach((item) => {
+    // Set keyboard navigation and assistive attributes
+    items?.forEach((item, index) => {
+      const isActive = index === currentItemKey;
+
+      const focusableIElement = getFocusableElement(item);
+      focusableIElement.tabIndex = isActive ? 0 : -1;
+
+      item.addEventListener("keyup", setKeyboardNav);
+
       item.setAttribute("aria-roledescription", "slide");
+      item.role = "group";
+      if (items && items.length > 0) {
+        item.ariaLabel = `${index + 1} of ${items.length + 1}`;
+      }
     });
-
-    ///////////////////
-    // items?.forEach((item, index) => {
-    //   const isActive = index === currentItemKey;
-
-    //   const links = item.querySelectorAll("a");
-    //   links.forEach((link) => {
-    //     link.tabIndex = isActive ? 0 : -1;
-    //   });
-    // });
-    ////////////////////////
 
     setSliderPadding();
   };
@@ -120,21 +70,31 @@
   const disableSlider = () => {
     if (!buttons || !list || !items) return;
 
-    buttons.forEach((button) => (button.style.display = ""));
+    buttons.forEach((button) => {
+      button.style.display = "";
+      button.removeAttribute("aria-controls");
+      button.removeAttribute("aria-label");
+    });
     buttons[0].removeEventListener("click", scrollLeft);
     buttons[1].removeEventListener("click", scrollRight);
 
-    items?.forEach((item) => {
-      item.removeAttribute("aria-roledescription");
-    });
-
     sliderContainer.style.setProperty("--_scroll-padding-left", "0px");
-    list.style.width = "";
-    list.style.overflow = "";
     items[items.length - 1].style.marginRight = "";
+    list.style.overflow = "";
+    list.style.width = "";
+
+    items?.forEach((item) => {
+      const focusableIElement = getFocusableElement(item);
+      focusableIElement.tabIndex = 0;
+
+      item.removeEventListener("keyup", setKeyboardNav);
+
+      item.removeAttribute("aria-roledescription");
+      item.removeAttribute("role");
+      item.removeAttribute("aria-label");
+    });
   };
 
-  //////////////////////////////////////////
   const setSliderPadding = () => {
     if (!itemsSlotContent || !items) return;
     const slotLeft = itemsSlotContent.getBoundingClientRect().left;
@@ -181,12 +141,13 @@
 
   const scrollToItem = (itemKey: number) => {
     if (!items) return;
+    getFocusableElement(items[currentItemKey]).tabIndex = -1;
+
     const item = items[itemKey];
     if (!item) return;
 
-    // item.tabIndex = 0;
+    getFocusableElement(item).tabIndex = 0;
     const scrollLeftTarget = item.getBoundingClientRect().left - scrollPaddingLeft + sliderContainer.scrollLeft;
-
     sliderContainer.scrollTo({
       left: scrollLeftTarget,
       behavior: "smooth",
@@ -195,40 +156,112 @@
     currentItemKey = itemKey;
   };
 
-  //////////////////////////////////////////
   const setCurrentITemKey = () => {
     if (!items) return;
+    getFocusableElement(items[currentItemKey]).tabIndex = -1;
 
     items.forEach((item, index) => {
       const itemLeft = item.getBoundingClientRect().left;
       if (itemLeft === scrollPaddingLeft) {
         currentItemKey = index;
+
+        getFocusableElement(item).tabIndex = 0;
       }
     });
+  };
+
+  const setKeyboardNav = (e: KeyboardEvent) => {
+    if (!items) return;
+    const item = e.currentTarget as HTMLElement;
+    const index = items.indexOf(item);
+
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+
+      let targetIndex = index;
+      if (e.key === "ArrowRight") targetIndex += 1;
+      if (e.key === "ArrowLeft") targetIndex -= 1;
+
+      const targetItem = items[targetIndex];
+      if (targetItem) {
+        const kbTargetItem = getFocusableElement(targetItem);
+        kbTargetItem.tabIndex = 0;
+        kbTargetItem.focus();
+        scrollToItem(targetIndex);
+      }
+    }
+  };
+
+  const getFocusableElement = (item: HTMLElement): HTMLElement => {
+    return item.querySelector("button") || (item.querySelector("a") as HTMLElement);
   };
 
   //////////////////////////////////////////
   const onScrollEnd = (element: HTMLElement, callback: () => void, delay = 150) => {
     if ("onscrollend" in document.createElement("div")) {
-      // ✅ Support natif
       element.addEventListener("scrollend", callback);
+      return () => element.removeEventListener("scrollend", callback);
     } else {
-      // 🔁 Fallback
       let timeout: ReturnType<typeof setTimeout> | undefined;
-      element.addEventListener("scroll", () => {
+      const scrollHandler = () => {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           callback();
         }, delay);
-      });
+      };
+      element.addEventListener("scroll", scrollHandler);
+      return () => {
+        clearTimeout(timeout);
+        element.removeEventListener("scroll", scrollHandler);
+      };
     }
   };
+
+  onMount(() => {
+    const HeaderSlot = sliderComponent?.querySelector('slot[name="header"]');
+    const itemsSlot = sliderComponent?.querySelector('slot[name="items"]');
+
+    if (!(HeaderSlot instanceof HTMLSlotElement)) return;
+    if (!(itemsSlot instanceof HTMLSlotElement)) return;
+
+    header = HeaderSlot.assignedElements()[0] as HTMLElement;
+    buttons = header.querySelectorAll("button");
+
+    itemsSlotContent = itemsSlot.assignedElements()[0] as HTMLElement;
+    list = itemsSlotContent.querySelector("ul");
+    if (list) items = Array.from(list.querySelectorAll("li"));
+
+    initSlider();
+
+    let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
+    const carouselContainerObserver = new ResizeObserver(() => {
+      isResizing = true;
+      clearTimeout(resizeTimeout);
+
+      resizeTimeout = setTimeout(() => {
+        isResizing = false;
+        setSliderPadding();
+      }, 150);
+    });
+    carouselContainerObserver.observe(sliderContainer);
+
+    const cleanupScrollEnd = onScrollEnd(sliderContainer, () => {
+      if (!isResizing) setCurrentITemKey();
+    });
+
+    return () => {
+      clearTimeout(resizeTimeout);
+      carouselContainerObserver.disconnect();
+      cleanupScrollEnd();
+      disableSlider();
+    };
+  });
 </script>
 
-<div bind:this={sliderComponent}>
+<div bind:this={sliderComponent} role="region" aria-roledescription="carousel">
   <slot name="header"></slot>
 
-  <div class="slider-container" bind:this={sliderContainer}>
+  <div class="slider-container" bind:this={sliderContainer} aria-live="polite">
     <slot name="items"></slot>
   </div>
 </div>

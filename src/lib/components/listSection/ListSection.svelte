@@ -16,7 +16,7 @@
 
   let {
     breakpoint = "480px",
-    verticalCount = 3,
+    verticalCount = 2,
     horizontalCount = 2,
   } = $props<{
     breakpoint?: string;
@@ -28,18 +28,14 @@
   let query = $state<MediaQueryList | null>(null);
 
   let Component = $state<any>(Slider);
-  let componentProps = $derived(
-    Component === Slider ? { horizontalCount } : { verticalCount },
-  );
+  let componentProps = $derived(Component === Slider ? { horizontalCount } : { verticalCount });
 
   const updateComponent = (matchQuery: boolean) => {
     Component = matchQuery ? Slider : ShowMore;
   };
 
   onMount(() => {
-    const cssBreakpointVarValue = getComputedStyle($host())
-      .getPropertyValue("--breakpoint")
-      .trim();
+    const cssBreakpointVarValue = getComputedStyle($host()).getPropertyValue("--_breakpoint").trim();
     if (cssBreakpointVarValue) {
       activeBreakpoint = cssBreakpointVarValue;
     }
@@ -64,9 +60,4 @@
 </Component>
 
 <style>
-  /* :host {
-    display: block;
-    width: 100%;
-    height: 100%;
-  } */
 </style>
