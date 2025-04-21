@@ -250,10 +250,10 @@
     });
 
     return () => {
+      disableSlider();
       clearTimeout(resizeTimeout);
       carouselContainerObserver.disconnect();
       cleanupScrollEnd();
-      disableSlider();
     };
   });
 </script>
