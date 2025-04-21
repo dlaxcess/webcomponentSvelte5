@@ -14,86 +14,54 @@
     horizontalCount?: string;
   }>();
 
-  let currentItemKey = $state<number>(0);
-
-  let carousel: HTMLElement;
-  let carouselContainer: HTMLElement;
+  let sliderComponent: HTMLElement;
+  let sliderContainer: HTMLElement;
 
   let header = $state<HTMLElement | null>(null);
   let buttons = $state<NodeListOf<HTMLButtonElement> | null>(null);
 
-  let content = $state<HTMLElement | null>(null);
-  let itemsContainer = $state<HTMLElement | null>(null);
+  let itemsSlotContent = $state<HTMLElement | null>(null);
+  let list = $state<HTMLElement | null>(null);
   let items = $state<HTMLElement[] | null>(null);
 
-  let startItemsLeft = $state(0);
+  let scrollPaddingLeft = $state(0);
 
+  let currentItemKey = $state<number>(0);
   let currentHorizontalCount = $state(horizontalCount);
 
   let isResizing = $state(false);
 
-  function scrollLeft() {
-    const newCurrentItemKey =
-      currentHorizontalCount * Math.ceil(currentItemKey / currentHorizontalCount) - currentHorizontalCount;
-
-    scrollToItem(newCurrentItemKey);
-  }
-
-  function scrollRight() {
-    const newCurrentItemKey =
-      currentHorizontalCount * Math.floor(currentItemKey / currentHorizontalCount) + currentHorizontalCount;
-
-    scrollToItem(newCurrentItemKey);
-  }
-
-  const onResizeToMobWide = (isMobWide: boolean) => {
-    isMobWide ? initCarousel() : disableCarousel();
-  };
-
   onMount(() => {
-    const HeaderSlot = carousel?.querySelector('slot[name="header"]');
-    const ContentSlot = carousel?.querySelector('slot[name="items"]');
+    const HeaderSlot = sliderComponent?.querySelector('slot[name="header"]');
+    const itemsSlot = sliderComponent?.querySelector('slot[name="items"]');
 
     if (!(HeaderSlot instanceof HTMLSlotElement)) return;
-    if (!(ContentSlot instanceof HTMLSlotElement)) return;
+    if (!(itemsSlot instanceof HTMLSlotElement)) return;
 
     header = HeaderSlot.assignedElements()[0] as HTMLElement;
     buttons = header.querySelectorAll("button");
 
-    content = ContentSlot.assignedElements()[0] as HTMLElement;
-    items = Array.from(content.querySelectorAll(".item"));
-    itemsContainer = items[0].parentElement;
+    itemsSlotContent = itemsSlot.assignedElements()[0] as HTMLElement;
+    list = itemsSlotContent.querySelector("ul");
+    if (list) items = Array.from(list.querySelectorAll("li"));
 
-    initCarousel();
+    initSlider();
 
     let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
     const carouselContainerObserver = new ResizeObserver(() => {
       isResizing = true;
-
       clearTimeout(resizeTimeout);
 
       resizeTimeout = setTimeout(() => {
-        console.log("Resize terminé !");
         isResizing = false;
-
-        setCarouselPadding();
+        setSliderPadding();
       }, 150);
     });
+    carouselContainerObserver.observe(sliderContainer);
 
-    carouselContainerObserver.observe(carouselContainer);
-
-    onScrollEnd(carouselContainer, () => {
-      console.log("Scroll terminé !");
-      // snapToClosestItem();
+    onScrollEnd(sliderContainer, () => {
       if (!isResizing) setCurrentITemKey();
     });
-
-    // items.forEach((item, index) => {
-    //   item.addEventListener("focusin", (e) => {
-    //     console.log("Item focused:", index);
-    //     scrollToItem(index);
-    //   });
-    // });
 
     //////////////////////////////
     // Foucus
@@ -115,72 +83,21 @@
     return () => {
       clearTimeout(resizeTimeout);
       carouselContainerObserver.disconnect();
-      disableCarousel();
-      console.log("carousel killed");
+      disableSlider();
     };
   });
+
   //////////////////////////////////////////
-  const setCarouselPadding = () => {
-    // alert("Set padding !");
-    if (!content || !items) return;
-    const slotLeft = content.getBoundingClientRect().left;
-    const firstItemLeft = items[0].getBoundingClientRect().left;
+  const initSlider = () => {
+    if (!buttons || !list) return;
 
-    // const newStartItemLeft = Math.abs(firstItemLeft - slotLeft);
-    // if (newStartItemLeft !== startItemsLeft) {
-    //   startItemsLeft = newStartItemLeft;
-    startItemsLeft = Math.abs(firstItemLeft - slotLeft);
-
-    carouselContainer.style.setProperty("--_scroll-padding-left", `${startItemsLeft}px`);
-    // }
-
-    if (items.length >= currentHorizontalCount) {
-      currentHorizontalCount = horizontalCount;
-
-      const lastItemRight = items[items.length - 1].getBoundingClientRect().right;
-
-      const itemsPerScrollToLastLeft = items[items.length - currentHorizontalCount].getBoundingClientRect().left;
-
-      let lastItemsWidth = lastItemRight - itemsPerScrollToLastLeft;
-
-      const carouselContainerWidth = carouselContainer.clientWidth;
-
-      while (lastItemsWidth > carouselContainerWidth) {
-        currentHorizontalCount -= 1;
-
-        const previousItemToLastLeft = items[items.length - currentHorizontalCount].getBoundingClientRect().left;
-
-        lastItemsWidth = lastItemRight - previousItemToLastLeft;
-      }
-
-      const distance = carouselContainerWidth - (startItemsLeft + lastItemsWidth);
-
-      // currentItem.parentElement.style.paddingRight = `${distance}px`;
-
-      items[items.length - 1].style.marginRight = `${distance}px`;
-      // content.style.marginRight = `${distance}px`;
-      // carouselContainer.style.scrollPaddingLeft = `${startItemsLeft}px`;
-      // carouselContainer.style.setProperty(
-      //   "--_scroll-padding-right",
-      //   `${distance}px`,
-      // );
-    }
-  };
-  //////////////////////////////////////////
-  const initCarousel = () => {
-    // alert("mode desktop !");
-    if (!buttons || !itemsContainer) return;
-
-    // Set button
     buttons.forEach((button) => (button.style.display = "block"));
     buttons[0].addEventListener("click", scrollLeft);
     buttons[1].addEventListener("click", scrollRight);
 
     // Override direct items parent styles that was setted in case of Javascript disabled in browser
-    itemsContainer.style.overflow = "initial";
-    itemsContainer.style.width = "fit-content";
-
-    carouselContainer.style.overflowX = "scroll";
+    list.style.overflow = "initial";
+    list.style.width = "fit-content";
 
     items?.forEach((item) => {
       item.setAttribute("aria-roledescription", "slide");
@@ -197,17 +114,13 @@
     // });
     ////////////////////////
 
-    // Set spacing dimension arround slides
-    setCarouselPadding();
+    setSliderPadding();
   };
 
-  const disableCarousel = () => {
-    // alert("mode mobile !");
-    if (!buttons || !itemsContainer || !items) return;
+  const disableSlider = () => {
+    if (!buttons || !list || !items) return;
 
-    carouselContainer.style.overflowX = "initial";
-
-    buttons.forEach((button) => (button.style.display = "none"));
+    buttons.forEach((button) => (button.style.display = ""));
     buttons[0].removeEventListener("click", scrollLeft);
     buttons[1].removeEventListener("click", scrollRight);
 
@@ -215,22 +128,66 @@
       item.removeAttribute("aria-roledescription");
     });
 
-    carouselContainer.style.setProperty("--_scroll-padding-left", "0px");
-    itemsContainer.style.width = "100%";
-    items[items.length - 1].style.marginRight = "0";
+    sliderContainer.style.setProperty("--_scroll-padding-left", "0px");
+    list.style.width = "";
+    list.style.overflow = "";
+    items[items.length - 1].style.marginRight = "";
   };
 
   //////////////////////////////////////////
+  const setSliderPadding = () => {
+    if (!itemsSlotContent || !items) return;
+    const slotLeft = itemsSlotContent.getBoundingClientRect().left;
+    const firstItemLeft = items[0].getBoundingClientRect().left;
+
+    scrollPaddingLeft = Math.abs(firstItemLeft - slotLeft);
+    sliderContainer.style.setProperty("--_scroll-padding-left", `${scrollPaddingLeft}px`);
+
+    if (items.length >= currentHorizontalCount) {
+      currentHorizontalCount = horizontalCount;
+
+      const lastItem = items[items.length - 1];
+      const lastItemRight = lastItem.getBoundingClientRect().right;
+      const lastHorizontalCountLeft = items[items.length - currentHorizontalCount].getBoundingClientRect().left;
+      let horizontalCountWidth = lastItemRight - lastHorizontalCountLeft;
+      const carouselContainerWidth = sliderContainer.clientWidth;
+
+      while (horizontalCountWidth > carouselContainerWidth) {
+        currentHorizontalCount -= 1;
+
+        const newLastHorizontalCountLeft = items[items.length - currentHorizontalCount].getBoundingClientRect().left;
+        horizontalCountWidth = lastItemRight - newLastHorizontalCountLeft;
+      }
+
+      const marginRight = carouselContainerWidth - (scrollPaddingLeft + horizontalCountWidth);
+      lastItem.style.marginRight = `${marginRight}px`;
+    }
+  };
+
+  //////////////////////////////////////////
+  const scrollLeft = () => {
+    const newCurrentItemKey =
+      currentHorizontalCount * Math.ceil(currentItemKey / currentHorizontalCount) - currentHorizontalCount;
+
+    scrollToItem(newCurrentItemKey);
+  };
+
+  const scrollRight = () => {
+    const newCurrentItemKey =
+      currentHorizontalCount * Math.floor(currentItemKey / currentHorizontalCount) + currentHorizontalCount;
+
+    scrollToItem(newCurrentItemKey);
+  };
+
   const scrollToItem = (itemKey: number) => {
     if (!items) return;
-
     const item = items[itemKey];
     if (!item) return;
 
     // item.tabIndex = 0;
-    const scrollLeftTarget = item.getBoundingClientRect().left - startItemsLeft + carouselContainer.scrollLeft;
+    const scrollLeftTarget = item.getBoundingClientRect().left - scrollPaddingLeft + sliderContainer.scrollLeft;
 
-    carouselContainer.scrollTo({
+    sliderContainer.scrollTo({
       left: scrollLeftTarget,
       behavior: "smooth",
     });
@@ -244,35 +201,11 @@
 
     items.forEach((item, index) => {
       const itemLeft = item.getBoundingClientRect().left;
-      if (itemLeft === startItemsLeft) {
+      if (itemLeft === scrollPaddingLeft) {
         currentItemKey = index;
       }
     });
   };
-
-  //////////////////////////////////////////
-  // const snapToClosestItem = () => {
-  //   if (!items) return;
-  //   // const containerLeft = carouselContainer.getBoundingClientRect().left;
-  //   if (items[currentItemKey].getBoundingClientRect().left === startItemsLeft)
-  //     return;
-  //   console.log("snaptoclosest");
-
-  //   const closest = items.reduce((closestItem, item) => {
-  //     const itemLeft = item.getBoundingClientRect().left;
-  //     const distance = Math.abs(itemLeft - startItemsLeft);
-
-  //     const closestLeft = closestItem.getBoundingClientRect().left;
-  //     const closestDistance = Math.abs(closestLeft - startItemsLeft);
-
-  //     return distance < closestDistance ? item : closestItem;
-  //   });
-
-  //   if (!closest) return;
-
-  //   const closestItemKey = [...items].indexOf(closest);
-  //   scrollToItem(closestItemKey);
-  // };
 
   //////////////////////////////////////////
   const onScrollEnd = (element: HTMLElement, callback: () => void, delay = 150) => {
@@ -292,31 +225,16 @@
   };
 </script>
 
-<div class="carousel-wrapper" bind:this={carousel}>
+<div bind:this={sliderComponent}>
   <slot name="header"></slot>
 
-  <div class="carousel-container" bind:this={carouselContainer}>
+  <div class="slider-container" bind:this={sliderContainer}>
     <slot name="items"></slot>
-
-    <!-- <button>Afficher plus</button> -->
   </div>
 </div>
 
 <style>
-  :host {
-    display: block;
-    width: var(--carousel-width);
-    max-width: var(--carousel-max-width);
-    --breakpoint: 480px;
-  }
-
-  .carousel-wrapper {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-  }
-
-  .carousel-container {
+  .slider-container {
     width: 100%;
     scrollbar-width: none;
     scroll-behavior: smooth;
