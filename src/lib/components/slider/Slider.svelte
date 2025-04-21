@@ -57,6 +57,7 @@
 
       item.addEventListener("keyup", setKeyboardNav);
 
+      item.style.scrollSnapAlign = "start";
       item.setAttribute("aria-roledescription", "slide");
       item.role = "group";
       if (items && items.length > 0) {
@@ -89,6 +90,7 @@
 
       item.removeEventListener("keyup", setKeyboardNav);
 
+      item.style.scrollSnapAlign = "";
       item.removeAttribute("aria-roledescription");
       item.removeAttribute("role");
       item.removeAttribute("aria-label");
