@@ -195,7 +195,9 @@
   };
 
   const getFocusableElement = (item: HTMLElement): HTMLElement => {
-    return item.querySelector("button") || (item.querySelector("a") as HTMLElement);
+    // Sélectionne le premier élément focusable dans l'item
+    const focusable = item.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    return focusable as HTMLElement;
   };
 
   //////////////////////////////////////////
@@ -231,7 +233,7 @@
 
     itemsSlotContent = itemsSlot.assignedElements()[0] as HTMLElement;
     list = itemsSlotContent.querySelector("ul");
-    if (list) items = Array.from(list.querySelectorAll("li"));
+    if (list) items = Array.from(list.querySelectorAll(":scope > li"));
 
     initSlider();
 

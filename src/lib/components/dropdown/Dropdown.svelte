@@ -1,135 +1,61 @@
-<svelte:options
-  customElement={{
-    tag: "pc-dropdown",
-    props: {
-      verticalCount: { type: "Number", attribute: "vertical-count" },
-    },
-  }}
-/>
+<svelte:options customElement="pc-dropdown" />
 
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let { verticalCount = 3 } = $props<{
-    verticalCount?: number;
-  }>();
-
   let isOpen = $state(false);
   let dropdownContainer: HTMLElement;
-  let items = $state<HTMLElement[] | null>(null);
-  let showMoreBtn = $state<HTMLButtonElement | null>(null);
-  let showLessBtn = $state<HTMLButtonElement | null>(null);
+  let trigger = $state<HTMLElement | null>(null);
+  let content = $state<HTMLElement | null>(null);
 
-  // function toggleDropdown() {
-  //   console.log(" toggleDropdown isOpen 1: ", isOpen);
-  //   isOpen = !isOpen;
-  //   console.log(" toggleDropdown isOpen 2: ", isOpen);
-  // }
-
-  // const open = () => {
-  //   isOpen = true;
-  // };
-
-  // const close = () => {
-  //   isOpen = false;
-  // };
-
-  const showAll = () => {
-    items?.forEach((item) => {
-      item.style.display = "block";
-    });
-    if (!showMoreBtn || !showLessBtn) return;
-    showMoreBtn.style.display = "none";
-    showLessBtn.style.display = "block";
+  const open = () => {
+    if (!content) return;
+    content.style.display = "";
     isOpen = true;
+    if (trigger) trigger.ariaExpanded = "true";
   };
 
-  const showVerticalCount = () => {
-    items?.forEach((item, index) => {
-      if (index >= verticalCount) item.style.display = "none";
-    });
-    if (!showMoreBtn || !showLessBtn) return;
-    showMoreBtn.style.display = "block";
-    showLessBtn.style.display = "none";
+  const close = () => {
+    if (!content) return;
+    content.style.display = "none";
     isOpen = false;
+    if (trigger) trigger.ariaExpanded = "false";
   };
 
-  const handleKeyDownOpen = (event: KeyboardEvent) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      showAll();
-      const itemToFocus = items?.[verticalCount];
-      const link = itemToFocus?.querySelector("a");
-
-      if (link) {
-        link.focus();
-      } else if (itemToFocus?.hasAttribute("tabindex")) {
-        itemToFocus?.focus();
-      }
-    }
-  };
-
-  const handleKeyDownClose = (event: KeyboardEvent) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      showVerticalCount();
-      showMoreBtn?.focus();
-    }
-  };
-
-  const handleEscClose = (event: KeyboardEvent) => {
-    if (event.key === "Escape" && isOpen) {
-      event.preventDefault();
-      showVerticalCount();
-      showMoreBtn?.focus();
-    }
+  const toggleOpen = () => {
+    isOpen ? close() : open();
   };
 
   onMount(() => {
-    const ContentSlot = dropdownContainer?.querySelector('slot[name="items"]');
-    const showMoreBtnSlot = dropdownContainer?.querySelector('slot[name="show-more"]');
-    const showLessBtnSlot = dropdownContainer?.querySelector('slot[name="show-less"]');
+    const triggerSlot = dropdownContainer.querySelector('slot[name="dropdown-trigger"]') as HTMLSlotElement;
+    const contentSlot = dropdownContainer.querySelector('slot[name="dropdown-content"]') as HTMLSlotElement;
 
-    if (!(ContentSlot instanceof HTMLSlotElement)) return;
-    if (!(showMoreBtnSlot instanceof HTMLSlotElement)) return;
-    if (!(showLessBtnSlot instanceof HTMLSlotElement)) return;
+    if (!triggerSlot || !contentSlot) return;
 
-    const content = ContentSlot.assignedElements()[0] as HTMLElement;
-    items = Array.from(content.querySelectorAll(".item"));
-    showMoreBtn = showMoreBtnSlot.assignedElements()[0] as HTMLButtonElement;
-    showLessBtn = showLessBtnSlot.assignedElements()[0] as HTMLButtonElement;
+    trigger = triggerSlot?.assignedElements()[0] as HTMLElement;
+    content = contentSlot?.assignedElements()[0] as HTMLElement;
 
-    content.addEventListener("keydown", handleEscClose);
-    showMoreBtn.addEventListener("click", showAll);
-    showMoreBtn.addEventListener("keydown", handleKeyDownOpen);
+    if (!trigger || !content) return;
 
-    showLessBtn.addEventListener("click", showVerticalCount);
-    showLessBtn.addEventListener("keydown", handleKeyDownClose);
+    content.style.position = "absolute";
+    trigger.ariaExpanded = "false";
 
-    showVerticalCount();
+    close();
+    trigger.addEventListener("click", toggleOpen);
 
     return () => {
-      content.removeEventListener("keydown", handleEscClose);
-      showMoreBtn?.removeEventListener("click", showAll);
-      showMoreBtn?.removeEventListener("keydown", handleKeyDownOpen);
-
-      showLessBtn?.removeEventListener("click", showVerticalCount);
-      showLessBtn?.addEventListener("keydown", handleKeyDownClose);
+      trigger?.removeEventListener("click", toggleOpen);
     };
   });
 </script>
 
-<div class="dropdown" bind:this={dropdownContainer}>
-  <slot name="header"></slot>
-
-  <!-- {#if isOpen} -->
-  <div class="dropdown-content" role="listbox">
-    <slot name="items"></slot>
-  </div>
-  <!-- {/if} -->
-  <slot name="show-more"></slot>
-  <slot name="show-less"></slot>
+<div bind:this={dropdownContainer}>
+  <slot name="dropdown-trigger"></slot>
+  <slot name="dropdown-content"></slot>
 </div>
 
 <style>
+  div {
+    position: relative;
+  }
 </style>
