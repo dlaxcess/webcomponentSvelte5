@@ -5,6 +5,7 @@
 
   let isOpen = $state(false);
   let dropdownContainer: HTMLElement;
+
   let trigger = $state<HTMLElement | null>(null);
   let content = $state<HTMLElement | null>(null);
 
@@ -12,18 +13,21 @@
     if (!content) return;
     content.style.display = "";
     isOpen = true;
-    if (trigger) trigger.ariaExpanded = "true";
   };
 
   const close = () => {
     if (!content) return;
     content.style.display = "none";
     isOpen = false;
-    if (trigger) trigger.ariaExpanded = "false";
   };
 
   const toggleOpen = () => {
     isOpen ? close() : open();
+  };
+
+  const initDropdown = () => {
+    if (!trigger) return;
+    trigger.ariaExpanded = "false";
   };
 
   onMount(() => {
@@ -37,25 +41,23 @@
 
     if (!trigger || !content) return;
 
-    content.style.position = "absolute";
-    trigger.ariaExpanded = "false";
+    const button = dropdownContainer.querySelector("button");
+    console.log(" onMount button: ", button);
 
     close();
-    trigger.addEventListener("click", toggleOpen);
+    initDropdown();
+    if (button) button.addEventListener("click", toggleOpen);
 
-    return () => {
-      trigger?.removeEventListener("click", toggleOpen);
-    };
+    return () => {};
   });
 </script>
 
-<div bind:this={dropdownContainer}>
-  <slot name="dropdown-trigger"></slot>
+<div class="dropdown" bind:this={dropdownContainer} role="presentation">
+  <button>
+    <slot name="dropdown-trigger"></slot>
+  </button>
   <slot name="dropdown-content"></slot>
 </div>
 
 <style>
-  div {
-    position: relative;
-  }
 </style>
