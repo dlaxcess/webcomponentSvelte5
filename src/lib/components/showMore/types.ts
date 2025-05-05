@@ -3,7 +3,7 @@ export interface ShowMoreProps {
 }
 
 export interface ShowMoreSlots {
-  header: boolean;
+  header?: boolean;
   items: boolean;
   "show-more": boolean;
   "show-less": boolean;
