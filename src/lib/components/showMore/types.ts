@@ -5,8 +5,8 @@ export interface ShowMoreProps {
 export interface ShowMoreSlots {
   header: boolean;
   items: boolean;
-  "show-more"?: boolean;
-  "show-less"?: boolean;
+  "show-more": boolean;
+  "show-less": boolean;
 }
 
 export type ShowMoreType = ShowMoreProps & ShowMoreSlots;
