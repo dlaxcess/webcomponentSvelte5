@@ -2,7 +2,6 @@
   customElement={{
     tag: "pc-list-section",
     props: {
-      breakpoint: { type: "String" },
       verticalCount: { type: "Number", attribute: "vertical-count" },
       horizontalCount: { type: "Number", attribute: "horizontal-count" },
     },
@@ -14,17 +13,12 @@
   import ShowMore from "../showMore/ShowMore.svelte";
   import { onMount } from "svelte";
 
-  let {
-    breakpoint = "480px",
-    verticalCount = 2,
-    horizontalCount = 2,
-  } = $props<{
-    breakpoint?: string;
+  let { verticalCount = 2, horizontalCount = 2 } = $props<{
     verticalCount?: number;
     horizontalCount?: number;
   }>();
 
-  let activeBreakpoint = $state(breakpoint);
+  let activeBreakpoint = $state("480px");
   let query = $state<MediaQueryList | null>(null);
 
   let Component = $state<any>(Slider);
@@ -35,19 +29,19 @@
   };
 
   onMount(() => {
-    const cssBreakpointVarValue = getComputedStyle($host()).getPropertyValue("--_breakpoint").trim();
-    if (cssBreakpointVarValue) {
-      activeBreakpoint = cssBreakpointVarValue;
+    const breakpoint = getComputedStyle($host()).getPropertyValue("--_breakpoint").trim();
+    if (breakpoint) {
+      activeBreakpoint = breakpoint;
     }
 
     query = matchMedia(`(min-width: ${activeBreakpoint})`);
     updateComponent(query.matches);
 
-    const handler = (e: MediaQueryListEvent) => updateComponent(e.matches);
-    query.addEventListener("change", handler);
+    const queryHandler = (e: MediaQueryListEvent) => updateComponent(e.matches);
+    query.addEventListener("change", queryHandler);
 
     return () => {
-      query?.removeEventListener("change", handler);
+      query?.removeEventListener("change", queryHandler);
     };
   });
 </script>
@@ -58,6 +52,3 @@
   <slot name="show-more" slot="show-more"></slot>
   <slot name="show-less" slot="show-less"></slot>
 </Component>
-
-<style>
-</style>

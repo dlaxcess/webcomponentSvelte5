@@ -9,6 +9,7 @@
 
 <script lang="ts">
   import { onMount } from "svelte";
+  import { findFirstFocusableElement } from "$lib/functions/utils";
 
   let { verticalCount = 2 } = $props<{
     verticalCount?: number;
@@ -21,20 +22,28 @@
   let showLessBtn = $state<HTMLButtonElement | null>(null);
 
   const toggleVisibility = (show: boolean) => {
-    if (!items) return;
+    if (!items) {
+      return;
+    }
+
     items.forEach((item, index) => {
       item.style.display = show || index < verticalCount ? "block" : "none";
     });
 
-    if (showMoreBtn && showLessBtn) {
-      showMoreBtn.style.display = show ? "none" : "block";
-      showLessBtn.style.display = show ? "block" : "none";
+    if (!showMoreBtn || !showLessBtn) {
+      console.warn("showMoreBtn & showLessBtn slots must be provided. At least one is missing");
+      return;
     }
 
-    if (list) {
-      const newItemsCount = show ? items.length - verticalCount : 0;
-      list.setAttribute("aria-label", show ? `${newItemsCount} éléments supplémentaires affichés` : "Liste réduite");
+    showMoreBtn.style.display = show ? "none" : "block";
+    showLessBtn.style.display = show ? "block" : "none";
+
+    if (!list) {
+      return;
     }
+
+    const newItemsCount = show ? items.length - verticalCount : 0;
+    list.setAttribute("aria-label", show ? `${newItemsCount} éléments supplémentaires affichés` : "Liste réduite");
   };
 
   const handleKeyDown = (event: KeyboardEvent, show: boolean) => {
@@ -48,24 +57,30 @@
     const target = event.target as HTMLElement;
     const isShowMoreLessButton = target === showMoreBtn || target === showLessBtn;
 
-    if (isShowMoreLessButton && (event.key === "Enter" || event.key === " ")) {
-      event.preventDefault();
-
-      if (show) {
-        toggleVisibility(true);
-        const itemToFocus = items?.[verticalCount];
-        if (itemToFocus) {
-          getFocusableElement(itemToFocus).focus();
-        }
-      } else {
-        toggleVisibility(false);
-        showMoreBtn?.focus();
-      }
+    if (!isShowMoreLessButton) {
+      return;
     }
-  };
 
-  const getFocusableElement = (item: HTMLElement): HTMLElement => {
-    return item.querySelector("button") || (item.querySelector("a") as HTMLElement);
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (!show) {
+      toggleVisibility(false);
+      showMoreBtn?.focus();
+      return;
+    }
+
+    toggleVisibility(true);
+
+    const itemToFocus = items?.[verticalCount];
+    if (!itemToFocus) {
+      return;
+    }
+
+    findFirstFocusableElement(itemToFocus)?.focus();
   };
 
   onMount(() => {
@@ -77,11 +92,12 @@
       !(itemsSlot instanceof HTMLSlotElement) ||
       !(showMoreBtnSlot instanceof HTMLSlotElement) ||
       !(showLessBtnSlot instanceof HTMLSlotElement)
-    )
+    ) {
       return;
+    }
 
     list = itemsSlot.assignedElements()[0].querySelector("ul");
-    items = Array.from(list?.querySelectorAll("li") || []);
+    items = Array.from(list?.querySelectorAll(":scope > li") || []);
 
     showMoreBtn = showMoreBtnSlot.assignedElements()[0] as HTMLButtonElement;
     showLessBtn = showLessBtnSlot.assignedElements()[0] as HTMLButtonElement;
@@ -136,6 +152,3 @@
   <slot name="show-more"></slot>
   <slot name="show-less"></slot>
 </div>
-
-<style>
-</style>

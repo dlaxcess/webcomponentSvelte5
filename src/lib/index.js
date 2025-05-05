@@ -2,7 +2,6 @@ export { default as ActionButton } from './components/actionButton/index.js';
 export { default as Counter } from './components/counter/index.js';
 export { default as CounterDisplay } from './components/counterDisplay/index.js';
 export { default as Notifier } from './components/notifier/index.js';
-export { default as SecurePinPad } from './components/securePinPad/index.js';
 export { default as Dropdown } from './components/dropdown/index.js';
 export { default as ListSection } from './components/listSection/index.js';
 export { default as ShowMore } from './components/showMore/index.js';
